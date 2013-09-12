@@ -1,0 +1,5 @@
+int main() {
+	write('ouput integers:');
+	write(1); 
+	write(1+2);
+}
