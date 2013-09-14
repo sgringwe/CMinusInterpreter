@@ -13,6 +13,7 @@ input_dir = test_dir.replace('/tests', '/input')
 print('Test dir: ' + test_dir)
 print('Input dir: ' + input_dir)
 
+failure_occurred = False
 for fn in os.listdir(input_dir):
    if fn.endswith('.cm'):
       print('Running ' + fn)
@@ -24,5 +25,10 @@ for fn in os.listdir(input_dir):
       if(same):
         print 'Test passed for ' + fn + '!'
       else:
+        failure_occurred = True
         print 'FAILURE for ' + fn + '. This could be due to many reasons, including invalid gold file.'
       
+if failure_occurred:
+  print 'At least one of the tests FAILED'
+else:
+  print 'All tests PASSED'
