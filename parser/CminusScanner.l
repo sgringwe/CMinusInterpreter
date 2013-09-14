@@ -73,9 +73,9 @@ return				{ return RETURN; }
 \*				{ return TIMES; }
 \/				{ return DIVIDE;}
 ","				{ return COMMA;}
-\'[^\']*\'			{ return STRING; }
-[a-zA-Z]([a-zA-Z]|[0-9])*	{ return IDENTIFIER; }
-[0-9]+				{ return INTCON; }
+\'[^\']*\'			{ Cminus_lval.s = strdup(yytext); return STRING; }
+[a-zA-Z]([a-zA-Z]|[0-9])*	{ Cminus_lval.s = strdup(yytext); return IDENTIFIER; }
+[0-9]+				{ Cminus_lval.i = atoi(yytext); return INTCON; }
 {WS}				{ ; }
 "\n"				{ Cminus_lineno++;}
 .				{
