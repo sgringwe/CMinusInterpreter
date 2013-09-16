@@ -14,6 +14,10 @@ print('Test dir: ' + test_dir)
 print('Input dir: ' + input_dir)
 
 failure_occurred = False
+
+# Go through each .cmc file in input and run it
+# Then, compare the output to that of the gold file.
+# If it matches, success. Otherwise we have an error.
 for fn in os.listdir(input_dir):
    if fn.endswith('.cm'):
       print('Running ' + fn)

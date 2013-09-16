@@ -128,6 +128,7 @@ IdentifierList :
 	| IdentifierList COMMA VarDecl 
 ;
 
+// When a variable is declared, initialize it in the symbol table.
 VarDecl : 
 	IDENTIFIER { 
 		if (SymFieldExists(table, $1)) {
@@ -152,6 +153,7 @@ Statement :
 	| CompoundStatement
 ;
 
+// When an assignment is done, update the symbol table field.
 Assignment : 
 	Variable ASSIGN Expr SEMICOLON {
 		checkFieldExists($1);
@@ -192,13 +194,13 @@ WhileToken :
 IOStatement : 
 	READ LPAREN Variable RPAREN SEMICOLON {
 		checkFieldExists($3);
-		printf("%d\n", SymGetField(table, $3, $3));
+		printf("%d\n", SymGetField(table, $3, $3)); // Get variable value and print it
 	}
 	| WRITE LPAREN Expr RPAREN SEMICOLON {
-		printf("%d\n", $3);
+		printf("%d\n", $3); // Print the outcome of the expression
 	}
 	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
-		printf("%s\n", $3);
+		printf("%s\n", $3); // Print the string constant
 	}
 ;
 
@@ -222,6 +224,7 @@ StatementList :
 	| StatementList Statement 
 ;
 
+// Straight forward translation
 Expr : 
 	SimpleExpr {
 		$$ = $1;
@@ -237,6 +240,7 @@ Expr :
 	}
 ;
 
+// Straightforward translation
 SimpleExpr : 
 	AddExpr {
 		$$ = $1;
@@ -261,6 +265,7 @@ SimpleExpr :
 	}
 ;
 
+// Addition expression
 AddExpr	: 
 	MulExpr {
 		$$ = $1;
@@ -273,6 +278,7 @@ AddExpr	:
 	}
 ;
 
+// Multiple Expression
 MulExpr : 
 	Factor {
 		$$ = $1;
@@ -284,7 +290,9 @@ MulExpr :
 		$$ = $1 / $3;
 	}		
 ;
-				
+
+// For variables, look up the value and return it.
+// For constants, function calls and parenthesised expressions, return the value 
 Factor : 
 	Variable { 
 		$$ = SymGetField(table, $1, $1);
@@ -300,6 +308,7 @@ Factor :
 	}
 ;  
 
+// Either a variable or function.
 Variable : 
 	IDENTIFIER {
 		$$ = $1;
@@ -309,6 +318,7 @@ Variable :
 	}
 ;
 
+// String constants include the ''s when passed from flex. Remove those and then return the string.
 StringConstant : 
 	STRING {
 		// This removes the '' from the string that was parsed.
@@ -319,6 +329,7 @@ StringConstant :
 	}
 ;
 
+// Simply return the integer for now (only variable type)
 Constant : 
 	INTCON { 
 		$$ = $1;
@@ -330,6 +341,7 @@ Constant :
 
 /********************C ROUTINES *********************************/
 
+// Checks if a field exists and if it does not, calls a Cminus_error
 void checkFieldExists(char *s)
 {
 	if (!SymFieldExists(table, s)) {

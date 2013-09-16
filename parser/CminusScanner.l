@@ -73,9 +73,9 @@ return				{ return RETURN; }
 \*				{ return TIMES; }
 \/				{ return DIVIDE;}
 ","				{ return COMMA;}
-\'[^\']*\'			{ Cminus_lval.s = strdup(yytext); return STRING; }
-[a-zA-Z]([a-zA-Z]|[0-9])*	{ Cminus_lval.s = strdup(yytext); return IDENTIFIER; }
-[0-9]+				{ Cminus_lval.i = atoi(yytext); return INTCON; }
+\'[^\']*\'			{ Cminus_lval.s = strdup(yytext); return STRING; } // For strings, make sure lval.s is assigned
+[a-zA-Z]([a-zA-Z]|[0-9])*	{ Cminus_lval.s = strdup(yytext); return IDENTIFIER; } // For identifiers, make sure lval.s is assigned so we know the variable name
+[0-9]+				{ Cminus_lval.i = atoi(yytext); return INTCON; } // For int constants, make sure lval.i is assigned
 {WS}				{ ; }
 "\n"				{ Cminus_lineno++;}
 .				{
