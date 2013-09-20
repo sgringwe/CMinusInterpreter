@@ -152,7 +152,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 7 "CminusParser.y"
+#line 10 "CminusParser.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -200,7 +200,7 @@ SymTable table;
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 82 "CminusParser.y"
+#line 85 "CminusParser.y"
 {
   int i;
   char* s;
@@ -531,13 +531,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    92,    92,    93,    97,    98,   102,   106,   107,   111,
-     115,   120,   121,   127,   128,   132,   138,   142,   146,   147,
-     148,   149,   150,   151,   152,   156,   163,   164,   169,   173,
-     180,   184,   188,   193,   197,   200,   206,   211,   217,   221,
-     222,   226,   229,   232,   235,   241,   244,   247,   250,   253,
-     256,   259,   265,   268,   271,   277,   280,   283,   289,   292,
-     295,   298,   304,   307,   313,   323
+       0,    95,    95,    96,   100,   101,   105,   109,   110,   114,
+     118,   123,   124,   130,   131,   137,   143,   147,   151,   152,
+     153,   154,   155,   156,   157,   163,   170,   171,   176,   180,
+     187,   191,   195,   201,   205,   208,   214,   219,   225,   229,
+     230,   235,   238,   241,   244,   251,   254,   257,   260,   263,
+     266,   269,   276,   279,   282,   289,   292,   295,   303,   306,
+     309,   312,   319,   322,   329,   340
 };
 #endif
 
@@ -1529,7 +1529,7 @@ yyreduce:
   switch (yyn)
     {
         case 15:
-#line 132 "CminusParser.y"
+#line 137 "CminusParser.y"
     { 
 		if (SymFieldExists(table, (yyvsp[(1) - (1)].s))) {
 			Cminus_error("Field already exists");
@@ -1539,7 +1539,7 @@ yyreduce:
     break;
 
   case 25:
-#line 156 "CminusParser.y"
+#line 163 "CminusParser.y"
     {
 		checkFieldExists((yyvsp[(1) - (4)].s));
 		SymPutField(table, (yyvsp[(1) - (4)].s), (yyvsp[(1) - (4)].s), (yyvsp[(3) - (4)].i));
@@ -1547,204 +1547,204 @@ yyreduce:
     break;
 
   case 29:
-#line 173 "CminusParser.y"
+#line 180 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(2) - (3)].i)
+		(yyval.i) = (yyvsp[(2) - (3)].i);
 	;}
     break;
 
   case 33:
-#line 193 "CminusParser.y"
+#line 201 "CminusParser.y"
     {
 		checkFieldExists((yyvsp[(3) - (5)].s));
-		printf("%d\n", SymGetField(table, (yyvsp[(3) - (5)].s), (yyvsp[(3) - (5)].s)));
+		printf("%d\n", SymGetField(table, (yyvsp[(3) - (5)].s), (yyvsp[(3) - (5)].s))); // Get variable value and print it
 	;}
     break;
 
   case 34:
-#line 197 "CminusParser.y"
+#line 205 "CminusParser.y"
     {
-		printf("%d\n", (yyvsp[(3) - (5)].i));
+		printf("%d\n", (yyvsp[(3) - (5)].i)); // Print the outcome of the expression
 	;}
     break;
 
   case 35:
-#line 200 "CminusParser.y"
+#line 208 "CminusParser.y"
     {
-		printf("%s\n", (yyvsp[(3) - (5)].s));
+		printf("%s\n", (yyvsp[(3) - (5)].s)); // Print the string constant
 	;}
     break;
 
   case 37:
-#line 211 "CminusParser.y"
+#line 219 "CminusParser.y"
     {
 		exit(0);
 	;}
     break;
 
   case 41:
-#line 226 "CminusParser.y"
+#line 235 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (1)].i);
 	;}
     break;
 
   case 42:
-#line 229 "CminusParser.y"
+#line 238 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) || (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 43:
-#line 232 "CminusParser.y"
+#line 241 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) && (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 44:
-#line 235 "CminusParser.y"
+#line 244 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(2) - (2)].i) == 0) ? 1 : 0;
 	;}
     break;
 
   case 45:
-#line 241 "CminusParser.y"
+#line 251 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (1)].i);
 	;}
     break;
 
   case 46:
-#line 244 "CminusParser.y"
+#line 254 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) == (yyvsp[(3) - (3)].i)) ? 1 : 0;
 	;}
     break;
 
   case 47:
-#line 247 "CminusParser.y"
+#line 257 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) == (yyvsp[(3) - (3)].i)) ? 0 : 1;
 	;}
     break;
 
   case 48:
-#line 250 "CminusParser.y"
+#line 260 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) <= (yyvsp[(3) - (3)].i)) ? 1 : 0;
 	;}
     break;
 
   case 49:
-#line 253 "CminusParser.y"
+#line 263 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) < (yyvsp[(3) - (3)].i)) ? 1 : 0;
 	;}
     break;
 
   case 50:
-#line 256 "CminusParser.y"
+#line 266 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) >= (yyvsp[(3) - (3)].i)) ? 1 : 0;
 	;}
     break;
 
   case 51:
-#line 259 "CminusParser.y"
+#line 269 "CminusParser.y"
     {
 		(yyval.i) = ((yyvsp[(1) - (3)].i) > (yyvsp[(3) - (3)].i)) ? 1 : 0;
 	;}
     break;
 
   case 52:
-#line 265 "CminusParser.y"
+#line 276 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (1)].i);
 	;}
     break;
 
   case 53:
-#line 268 "CminusParser.y"
+#line 279 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) + (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 54:
-#line 271 "CminusParser.y"
+#line 282 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) - (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 55:
-#line 277 "CminusParser.y"
+#line 289 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (1)].i);
 	;}
     break;
 
   case 56:
-#line 280 "CminusParser.y"
+#line 292 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) * (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 57:
-#line 283 "CminusParser.y"
+#line 295 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].i) / (yyvsp[(3) - (3)].i);
 	;}
     break;
 
   case 58:
-#line 289 "CminusParser.y"
+#line 303 "CminusParser.y"
     { 
 		(yyval.i) = SymGetField(table, (yyvsp[(1) - (1)].s), (yyvsp[(1) - (1)].s));
 	;}
     break;
 
   case 59:
-#line 292 "CminusParser.y"
+#line 306 "CminusParser.y"
     { 
 		(yyval.i) = (yyvsp[(1) - (1)].i);
 	;}
     break;
 
   case 60:
-#line 295 "CminusParser.y"
+#line 309 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(1) - (3)].s);
 	;}
     break;
 
   case 61:
-#line 298 "CminusParser.y"
+#line 312 "CminusParser.y"
     {
 		(yyval.i) = (yyvsp[(2) - (3)].i);
 	;}
     break;
 
   case 62:
-#line 304 "CminusParser.y"
+#line 319 "CminusParser.y"
     {
 		(yyval.s) = (yyvsp[(1) - (1)].s);
 	;}
     break;
 
   case 63:
-#line 307 "CminusParser.y"
+#line 322 "CminusParser.y"
     {
 		(yyval.s) = (yyvsp[(1) - (4)].s);
 	;}
     break;
 
   case 64:
-#line 313 "CminusParser.y"
+#line 329 "CminusParser.y"
     {
 		// This removes the '' from the string that was parsed.
 		char* rv = (yyvsp[(1) - (1)].s);
@@ -1755,7 +1755,7 @@ yyreduce:
     break;
 
   case 65:
-#line 323 "CminusParser.y"
+#line 340 "CminusParser.y"
     { 
 		(yyval.i) = (yyvsp[(1) - (1)].s);
 	;}
@@ -1977,12 +1977,13 @@ yyreturn:
 }
 
 
-#line 328 "CminusParser.y"
+#line 345 "CminusParser.y"
 
 
 
 /********************C ROUTINES *********************************/
 
+// Checks if a field exists and if it does not, calls a Cminus_error
 void checkFieldExists(char *s)
 {
 	if (!SymFieldExists(table, s)) {
@@ -1990,6 +1991,7 @@ void checkFieldExists(char *s)
 	}
 }
 
+// Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)
 {
   fprintf(stderr,"%s: line %d: %s\n",fileName,Cminus_lineno,s);
@@ -2016,6 +2018,7 @@ static void initialize(char* inputFileName) {
 		  exit(-1);
 		}
 
+	// Initialize the symbol table
 	table = SymInit(SYMTABLE_SIZE);
 
 }

@@ -1,5 +1,8 @@
 /*******************************************************/
 /*                     Cminus Parser                   */
+/* Student: Scott Ringwelski
+/* Program: CMinusProject1
+/* An interpreter for the CMinus language
 /*                                                     */
 /*******************************************************/
 
@@ -129,6 +132,7 @@ IdentifierList :
 ;
 
 // When a variable is declared, initialize it in the symbol table.
+// The variable can then be accessed later
 VarDecl : 
 	IDENTIFIER { 
 		if (SymFieldExists(table, $1)) {
@@ -154,6 +158,7 @@ Statement :
 ;
 
 // When an assignment is done, update the symbol table field.
+// First check if the field exists and reprot an error if it doesn't
 Assignment : 
 	Variable ASSIGN Expr SEMICOLON {
 		checkFieldExists($1);
@@ -173,7 +178,7 @@ TestAndThen	:
 				
 Test : 
 	LPAREN Expr RPAREN {
-		$$ = $2
+		$$ = $2;
 	}
 ;
 	
@@ -190,7 +195,8 @@ WhileToken :
 	WHILE 
 ;
 
-
+// This is where content is printed. It will either be an integer (first 2 cases) or
+// a string constant
 IOStatement : 
 	READ LPAREN Variable RPAREN SEMICOLON {
 		checkFieldExists($3);
@@ -349,6 +355,7 @@ void checkFieldExists(char *s)
 	}
 }
 
+// Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)
 {
   fprintf(stderr,"%s: line %d: %s\n",fileName,Cminus_lineno,s);
@@ -375,6 +382,7 @@ static void initialize(char* inputFileName) {
 		  exit(-1);
 		}
 
+	// Initialize the symbol table
 	table = SymInit(SYMTABLE_SIZE);
 
 }

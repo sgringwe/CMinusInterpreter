@@ -978,17 +978,17 @@ case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
 #line 76 "CminusScanner.l"
-{ Cminus_lval.s = strdup(Cminus_text); return STRING; }
+{ Cminus_lval.s = strdup(Cminus_text); return STRING; } // For strings, make sure lval.s is assigned
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 77 "CminusScanner.l"
-{ Cminus_lval.s = strdup(Cminus_text); return IDENTIFIER; }
+{ Cminus_lval.s = strdup(Cminus_text); return IDENTIFIER; } // For identifiers, make sure lval.s is assigned so we know the variable name
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 78 "CminusScanner.l"
-{ Cminus_lval.i = atoi(Cminus_text); return INTCON; }
+{ Cminus_lval.i = atoi(Cminus_text); return INTCON; } // For int constants, make sure lval.i is assigned
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
