@@ -21,10 +21,16 @@ failure_occurred = False
 for fn in os.listdir(input_dir):
    if fn.endswith('.cm'):
       print('Running ' + fn)
-      call(["./cmc", "input/" + fn])
+      file_name = "input/" + fn
+      assembly_name = file_name.replace('.cm', '.s')
+      executable_name = file_name.replace('.cm', '')
+      output_name = file_name.replace('.cm', '.output')
+      call(["./cmc", file_name])
+      call(["gcc", "-o", executable_name, assembly_name])
+      call(["./" + executable_name, ">", output_name])
       # shutil.copyfile('input/' + fn.replace('.cm', '.s'), 'tests/' + fn.replace('.cm', '.s'))
 
-      same = filecmp.cmp('input/' + fn.replace('.cm', '.s'), 'tests/' + fn.replace('.cm', '.s'))
+      same = filecmp.cmp(output_name, 'tests/' + fn.replace('.cm', '.s'))
 
       if(same):
         print 'Test passed for ' + fn + '!'

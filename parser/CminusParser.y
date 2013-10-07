@@ -29,6 +29,22 @@ EXTERN(int,Cminus_lex,(void));
 
 char *fileName;
 
+const char *ASSEMBLY_HEADER =
+"	.section        .rodata\n"
+".int_wformat: .string \"%d\\n\"\n"
+".str_wformat: .string \"%s\\n\"\n"
+".int_rformat: .string \"%d\"\n"
+"	.text\n"
+"	.globl main\n"
+"	.type main,@function\n"
+"main:   nop\n"
+"	pushq %rbp\n"
+"	movq %rsp, %rbp\n";
+
+const char *ASSEMBLY_FOOTER =
+"	leave\n"
+"	ret\n";
+
 extern int Cminus_lineno;
 
 SymTable table;
@@ -348,6 +364,8 @@ static void initialize(char* inputFileName) {
 		  fprintf(stderr,"Error: Could not open file %s\n",outputFileName);
 		  exit(-1);
 		}
+
+	printf("%s\n", ASSEMBLY_HEADER);
 
 	// Initialize the symbol table
 	table = SymInit(SYMTABLE_SIZE);

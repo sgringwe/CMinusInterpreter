@@ -1,5 +1,6 @@
+int i,j,k,l;
+
 int main () {
- int i,j,k,l;
 
 	i=1; j=0; k=0; l=1;
 

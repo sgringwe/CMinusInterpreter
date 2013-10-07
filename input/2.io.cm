@@ -1,5 +1,8 @@
+int a;
+
 int main() {
-	write('ouput integers:');
+	write('input an integer:');
+	read(a); write(a);
 	write(1); 
 	write(1+2);
 }
