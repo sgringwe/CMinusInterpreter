@@ -152,7 +152,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 10 "CminusParser.y"
+#line 7 "CminusParser.y"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -165,6 +165,7 @@
 #include <util/string_utils.h>
 
 #define SYMTABLE_SIZE 100
+#define SYMTAB_VALUE_FIELD     "value"
 
 /*********************EXTERNAL DECLARATIONS***********************/
 
@@ -174,9 +175,9 @@ EXTERN(int,Cminus_lex,(void));
 
 char *fileName;
 
-extern int Cminus_lineno;
+SymTable symtab;
 
-SymTable table;
+extern int Cminus_lineno;
 
 
 
@@ -199,15 +200,7 @@ SymTable table;
 #endif
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef union YYSTYPE
-#line 85 "CminusParser.y"
-{
-  int i;
-  char* s;
-}
-/* Line 193 of yacc.c.  */
-#line 210 "CminusParser.c"
-	YYSTYPE;
+typedef int YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
 # define YYSTYPE_IS_TRIVIAL 1
@@ -219,7 +212,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 223 "CminusParser.c"
+#line 216 "CminusParser.c"
 
 #ifdef short
 # undef short
@@ -531,13 +524,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    95,    95,    96,   100,   101,   105,   109,   110,   114,
-     118,   123,   124,   130,   131,   137,   143,   147,   151,   152,
-     153,   154,   155,   156,   157,   163,   170,   171,   176,   180,
-     187,   191,   195,   201,   205,   208,   214,   219,   225,   229,
-     230,   235,   238,   241,   244,   251,   254,   257,   260,   263,
-     266,   269,   276,   279,   282,   289,   292,   295,   303,   306,
-     309,   312,   319,   322,   329,   340
+       0,    84,    84,    88,    94,    99,   104,   110,   114,   120,
+     126,   133,   137,   144,   149,   155,   159,   165,   171,   175,
+     179,   183,   187,   191,   195,   201,   208,   212,   219,   225,
+     232,   238,   244,   251,   255,   260,   267,   273,   279,   285,
+     289,   295,   300,   305,   310,   317,   322,   327,   332,   337,
+     342,   347,   354,   359,   364,   371,   376,   381,   388,   393,
+     398,   402,   409,   414,   420,   427
 };
 #endif
 
@@ -1528,242 +1521,483 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 15:
-#line 137 "CminusParser.y"
+        case 2:
+#line 85 "CminusParser.y"
+    {
+			//printf("<Program> -> <Procedures>\n");
+		;}
+    break;
+
+  case 3:
+#line 89 "CminusParser.y"
+    {
+			//printf("<Program> -> <DeclList> <Procedures>\n");
+		;}
+    break;
+
+  case 4:
+#line 95 "CminusParser.y"
+    {
+			//printf("<Procedures> -> <ProcedureDecl> <Procedures>\n");
+		;}
+    break;
+
+  case 5:
+#line 99 "CminusParser.y"
+    {
+			//printf("<Procedures> -> epsilon\n");
+		;}
+    break;
+
+  case 6:
+#line 105 "CminusParser.y"
+    {
+			//printf("<ProcedureDecl> -> <ProcedureHead> <ProcedureBody>\n");
+		;}
+    break;
+
+  case 7:
+#line 111 "CminusParser.y"
+    {
+			//printf("<ProcedureHead> -> <FunctionDecl> <DeclList>\n");
+		;}
+    break;
+
+  case 8:
+#line 115 "CminusParser.y"
+    {
+			//printf("<ProcedureHead> -> <FunctionDecl>\n");
+		;}
+    break;
+
+  case 9:
+#line 121 "CminusParser.y"
+    {
+			//printf("<FunctionDecl> ->  <Type> <IDENTIFIER> <LP> <RP> <LBR>\n"); 
+		;}
+    break;
+
+  case 10:
+#line 127 "CminusParser.y"
+    {
+			//printf("<ProcedureBody> -> <StatementList> <RBR>\n");
+		;}
+    break;
+
+  case 11:
+#line 134 "CminusParser.y"
+    {
+			//printf("<DeclList> -> <Type> <IdentifierList> <SC>\n");
+		;}
+    break;
+
+  case 12:
+#line 138 "CminusParser.y"
+    {
+			//printf("<DeclList> -> <DeclList> <Type> <IdentifierList> <SC>\n");
+	 	;}
+    break;
+
+  case 13:
+#line 145 "CminusParser.y"
+    {
+			//printf("<IdentifierList> -> <VarDecl>\n");
+		;}
+    break;
+
+  case 14:
+#line 150 "CminusParser.y"
+    {
+			//printf("<IdentifierList> -> <IdentifierList> <CM> <VarDecl>\n");
+		;}
+    break;
+
+  case 15:
+#line 156 "CminusParser.y"
     { 
-		if (SymFieldExists(table, (yyvsp[(1) - (1)].s))) {
-			Cminus_error("Field already exists");
-		}
-		SymInitField(table, (yyvsp[(1) - (1)].s), NULL, NULL);
-	;}
+			//printf("<VarDecl> -> <IDENTIFIER\n");
+		;}
+    break;
+
+  case 16:
+#line 160 "CminusParser.y"
+    {
+			//printf("<VarDecl> -> <IDENTIFIER> <LBK> <INTCON> <RBK>\n");
+		;}
+    break;
+
+  case 17:
+#line 166 "CminusParser.y"
+    { 
+			//printf("<Type> -> <INTEGER>\n");
+		;}
+    break;
+
+  case 18:
+#line 172 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <Assignment>\n");
+		;}
+    break;
+
+  case 19:
+#line 176 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <IfStatement>\n");
+		;}
+    break;
+
+  case 20:
+#line 180 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <WhileStatement>\n");
+		;}
+    break;
+
+  case 21:
+#line 184 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <IOStatement>\n");
+		;}
+    break;
+
+  case 22:
+#line 188 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <ReturnStatement>\n");
+		;}
+    break;
+
+  case 23:
+#line 192 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <ExitStatement>\n");
+		;}
+    break;
+
+  case 24:
+#line 196 "CminusParser.y"
+    { 
+			//printf("<Statement> -> <CompoundStatement>\n");
+		;}
     break;
 
   case 25:
-#line 163 "CminusParser.y"
+#line 202 "CminusParser.y"
     {
-		checkFieldExists((yyvsp[(1) - (4)].s));
-		SymPutField(table, (yyvsp[(1) - (4)].s), (yyvsp[(1) - (4)].s), (yyvsp[(3) - (4)].i));
-	;}
+			setValue((yyvsp[(1) - (4)]), (yyvsp[(3) - (4)]));
+			//printf("<Assignment> -> <Variable> <ASSIGN> <Expr> <SC>\n");
+		;}
+    break;
+
+  case 26:
+#line 209 "CminusParser.y"
+    {
+			//printf("<IfStatement> -> <IF> <TestAndThen> <ELSE> <CompoundStatement>\n");
+		;}
+    break;
+
+  case 27:
+#line 213 "CminusParser.y"
+    {
+			//printf("<IfStatement> -> <IF> <TestAndThen>\n");
+		;}
+    break;
+
+  case 28:
+#line 220 "CminusParser.y"
+    {
+			//printf("<TestAndThen> -> <Test> <CompoundStatement>\n");
+		;}
     break;
 
   case 29:
-#line 180 "CminusParser.y"
+#line 226 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(2) - (3)].i);
-	;}
+			//printf("<Test> -> <LP> <Expr> <RP>\n");
+		;}
+    break;
+
+  case 30:
+#line 233 "CminusParser.y"
+    {
+			//printf("<WhileStatement> -> <WhileToken> <WhileExpr> <Statement>\n");
+		;}
+    break;
+
+  case 31:
+#line 239 "CminusParser.y"
+    {
+			//printf("<WhileExpr> -> <LP> <Expr> <RP>\n");
+		;}
+    break;
+
+  case 32:
+#line 245 "CminusParser.y"
+    {
+			//printf("<WhileToken> -> <WHILE>\n");
+		;}
     break;
 
   case 33:
-#line 201 "CminusParser.y"
+#line 252 "CminusParser.y"
     {
-		checkFieldExists((yyvsp[(3) - (5)].s));
-		printf("%d\n", SymGetField(table, (yyvsp[(3) - (5)].s), (yyvsp[(3) - (5)].s))); // Get variable value and print it
-	;}
+			//printf("<IOStatement> -> <READ> <LP> <Variable> <RP> <SC>\n");
+		;}
     break;
 
   case 34:
-#line 205 "CminusParser.y"
+#line 256 "CminusParser.y"
     {
-		printf("%d\n", (yyvsp[(3) - (5)].i)); // Print the outcome of the expression
-	;}
+			printf("%d\n", (yyvsp[(3) - (5)]));
+			//printf("<IOStatement> -> <WRITE> <LP> <Expr> <RP> <SC>\n");
+		;}
     break;
 
   case 35:
-#line 208 "CminusParser.y"
+#line 261 "CminusParser.y"
     {
-		printf("%s\n", (yyvsp[(3) - (5)].s)); // Print the string constant
-	;}
+		  printf("%s\n", (char *)SymGetFieldByIndex(symtab,(yyvsp[(3) - (5)]), SYM_NAME_FIELD));
+			//printf("<IOStatement> -> <WRITE> <LP> <StringConstant> <RP> <SC>\n");
+		;}
+    break;
+
+  case 36:
+#line 268 "CminusParser.y"
+    {
+			//printf("<ReturnStatement> -> <RETURN> <Expr> <SC>\n");
+		;}
     break;
 
   case 37:
-#line 219 "CminusParser.y"
+#line 274 "CminusParser.y"
     {
-		exit(0);
-	;}
+			//printf("<ExitStatement> -> <EXIT> <SC>\n");
+		;}
+    break;
+
+  case 38:
+#line 280 "CminusParser.y"
+    {
+			//printf("<CompoundStatement> -> <LBR> <StatementList> <RBR>\n");
+		;}
+    break;
+
+  case 39:
+#line 286 "CminusParser.y"
+    {		
+			//printf("<StatementList> -> <Statement>\n");
+		;}
+    break;
+
+  case 40:
+#line 290 "CminusParser.y"
+    {		
+			//printf("<StatementList> -> <StatementList> <Statement>\n");
+		;}
     break;
 
   case 41:
-#line 235 "CminusParser.y"
+#line 296 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (1)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<Expr> -> <SimpleExpr>\n");
+		;}
     break;
 
   case 42:
-#line 238 "CminusParser.y"
+#line 301 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) || (yyvsp[(3) - (3)].i);
-	;}
+		        (yyval) = (yyvsp[(1) - (3)]) | (yyvsp[(3) - (3)]);
+			//printf("<Expr> -> <Expr> <OR> <SimpleExpr> \n");
+		;}
     break;
 
   case 43:
-#line 241 "CminusParser.y"
+#line 306 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) && (yyvsp[(3) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (3)]) & (yyvsp[(3) - (3)]);
+			//printf("<Expr> -> <Expr> <AND> <SimpleExpr> \n");
+		;}
     break;
 
   case 44:
-#line 244 "CminusParser.y"
+#line 311 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(2) - (2)].i) == 0) ? 1 : 0;
-	;}
+			(yyval) = (yyvsp[(2) - (2)]) ^ 1;
+			//printf("<Expr> -> <NOT> <SimpleExpr> \n");
+		;}
     break;
 
   case 45:
-#line 251 "CminusParser.y"
+#line 318 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (1)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<SimpleExpr> -> <AddExpr>\n");
+		;}
     break;
 
   case 46:
-#line 254 "CminusParser.y"
+#line 323 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) == (yyvsp[(3) - (3)].i)) ? 1 : 0;
-	;}
+		        (yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)]));
+			//printf("<SimpleExpr> -> <SimpleExpr> <EQ> <AddExpr> \n");
+		;}
     break;
 
   case 47:
-#line 257 "CminusParser.y"
+#line 328 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) == (yyvsp[(3) - (3)].i)) ? 0 : 1;
-	;}
+		        (yyval) = ((yyvsp[(1) - (3)]) != (yyvsp[(3) - (3)]));
+			//printf("<SimpleExpr> -> <SimpleExpr> <NE> <AddExpr> \n");
+		;}
     break;
 
   case 48:
-#line 260 "CminusParser.y"
+#line 333 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) <= (yyvsp[(3) - (3)].i)) ? 1 : 0;
-	;}
+		        (yyval) = ((yyvsp[(1) - (3)]) <= (yyvsp[(3) - (3)]));
+			//printf("<SimpleExpr> -> <SimpleExpr> <LE> <AddExpr> \n");
+		;}
     break;
 
   case 49:
-#line 263 "CminusParser.y"
+#line 338 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) < (yyvsp[(3) - (3)].i)) ? 1 : 0;
-	;}
+		        (yyval) = ((yyvsp[(1) - (3)]) < (yyvsp[(3) - (3)]));
+			//printf("<SimpleExpr> -> <SimpleExpr> <LT> <AddExpr> \n");
+		;}
     break;
 
   case 50:
-#line 266 "CminusParser.y"
+#line 343 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) >= (yyvsp[(3) - (3)].i)) ? 1 : 0;
-	;}
+		        (yyval) = ((yyvsp[(1) - (3)]) >= (yyvsp[(3) - (3)]));
+			//printf("<SimpleExpr> -> <SimpleExpr> <GE> <AddExpr> \n");
+		;}
     break;
 
   case 51:
-#line 269 "CminusParser.y"
+#line 348 "CminusParser.y"
     {
-		(yyval.i) = ((yyvsp[(1) - (3)].i) > (yyvsp[(3) - (3)].i)) ? 1 : 0;
-	;}
+			//printf("<SimpleExpr> -> <SimpleExpr> <GT> <AddExpr> \n");
+		        (yyval) = ((yyvsp[(1) - (3)]) > (yyvsp[(3) - (3)]));
+		;}
     break;
 
   case 52:
-#line 276 "CminusParser.y"
+#line 355 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (1)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<AddExpr> -> <MulExpr>\n");
+		;}
     break;
 
   case 53:
-#line 279 "CminusParser.y"
+#line 360 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) + (yyvsp[(3) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]);
+			//printf("<AddExpr> -> <AddExpr> <PLUS> <MulExpr> \n");
+		;}
     break;
 
   case 54:
-#line 282 "CminusParser.y"
+#line 365 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) - (yyvsp[(3) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]);
+			//printf("<AddExpr> -> <AddExpr> <MINUS> <MulExpr> \n");
+		;}
     break;
 
   case 55:
-#line 289 "CminusParser.y"
+#line 372 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (1)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<MulExpr> -> <Factor>\n");
+		;}
     break;
 
   case 56:
-#line 292 "CminusParser.y"
+#line 377 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) * (yyvsp[(3) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]);
+			//printf("<MulExpr> -> <MulExpr> <TIMES> <Factor> \n");
+		;}
     break;
 
   case 57:
-#line 295 "CminusParser.y"
+#line 382 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(1) - (3)].i) / (yyvsp[(3) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (3)]) / (yyvsp[(3) - (3)]);
+			//printf("<MulExpr> -> <MulExpr> <DIVIDE> <Factor> \n");
+		;}
     break;
 
   case 58:
-#line 303 "CminusParser.y"
+#line 389 "CminusParser.y"
     { 
-		(yyval.i) = SymGetField(table, (yyvsp[(1) - (1)].s), (yyvsp[(1) - (1)].s));
-	;}
+			(yyval) = getValue((yyvsp[(1) - (1)]));
+			//printf("<Factor> -> <Variable>\n");
+		;}
     break;
 
   case 59:
-#line 306 "CminusParser.y"
+#line 394 "CminusParser.y"
     { 
-		(yyval.i) = (yyvsp[(1) - (1)].i);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<Factor> -> <Constant>\n");
+		;}
     break;
 
   case 60:
-#line 309 "CminusParser.y"
-    {
-		(yyval.i) = (yyvsp[(1) - (3)].s);
-	;}
+#line 399 "CminusParser.y"
+    {	
+			//printf("<Factor> -> <IDENTIFIER> <LP> <RP>\n");
+		;}
     break;
 
   case 61:
-#line 312 "CminusParser.y"
+#line 403 "CminusParser.y"
     {
-		(yyval.i) = (yyvsp[(2) - (3)].i);
-	;}
+			(yyval) = (yyvsp[(2) - (3)]);
+			//printf("<Factor> -> <LP> <Expr> <RP>\n");
+		;}
     break;
 
   case 62:
-#line 319 "CminusParser.y"
+#line 410 "CminusParser.y"
     {
-		(yyval.s) = (yyvsp[(1) - (1)].s);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<Variable> -> <IDENTIFIER>\n");
+		;}
     break;
 
   case 63:
-#line 322 "CminusParser.y"
+#line 415 "CminusParser.y"
     {
-		(yyval.s) = (yyvsp[(1) - (4)].s);
-	;}
+			//printf("<Variable> -> <IDENTIFIER> <LBK> <Expr> <RBK>\n");
+               	;}
     break;
 
   case 64:
-#line 329 "CminusParser.y"
-    {
-		// This removes the '' from the string that was parsed.
-		char* rv = (yyvsp[(1) - (1)].s);
-		rv++;
-		rv[strlen(rv)-1] = 0;
-		(yyval.s) = rv;
-	;}
+#line 421 "CminusParser.y"
+    { 
+		       (yyval) = (yyvsp[(1) - (1)]);
+			//printf("<StringConstant> -> <STRING>\n");
+		;}
     break;
 
   case 65:
-#line 340 "CminusParser.y"
+#line 428 "CminusParser.y"
     { 
-		(yyval.i) = (yyvsp[(1) - (1)].s);
-	;}
+			(yyval) = (yyvsp[(1) - (1)]);
+			//printf("<Constant> -> <INTCON>\n");
+		;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1767 "CminusParser.c"
+#line 2001 "CminusParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1977,21 +2211,12 @@ yyreturn:
 }
 
 
-#line 345 "CminusParser.y"
+#line 434 "CminusParser.y"
 
 
 
 /********************C ROUTINES *********************************/
 
-// Checks if a field exists and if it does not, calls a Cminus_error
-void checkFieldExists(char *s)
-{
-	if (!SymFieldExists(table, s)) {
-		Cminus_error("Undefined reference\n");
-	}
-}
-
-// Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)
 {
   fprintf(stderr,"%s: line %d: %s\n",fileName,Cminus_lineno,s);
@@ -2004,30 +2229,30 @@ int Cminus_wrap() {
 static void initialize(char* inputFileName) {
 
 	stdin = freopen(inputFileName,"r",stdin);
-		if (stdin == NULL) {
-		  fprintf(stderr,"Error: Could not open file %s\n",inputFileName);
-		  exit(-1);
-		}
+        if (stdin == NULL) {
+          fprintf(stderr,"Error: Could not open file %s\n",inputFileName);
+          exit(-1);
+        }
 
 	char* dotChar = rindex(inputFileName,'.');
 	int endIndex = strlen(inputFileName) - strlen(dotChar);
 	char *outputFileName = nssave(2,substr(inputFileName,0,endIndex),".s");
 	stdout = freopen(outputFileName,"w",stdout);
-		if (stdout == NULL) {
-		  fprintf(stderr,"Error: Could not open file %s\n",outputFileName);
-		  exit(-1);
-		}
+        if (stdout == NULL) {
+          fprintf(stderr,"Error: Could not open file %s\n",outputFileName);
+          exit(-1);
+        }
 
-	// Initialize the symbol table
-	table = SymInit(SYMTABLE_SIZE);
-
+	 symtab = SymInit(SYMTABLE_SIZE);
+	 SymInitField(symtab,SYMTAB_VALUE_FIELD,(Generic)-1,NULL);
 }
 
 static void finalize() {
 
-	fclose(stdin);
-	fclose(stdout);
-	
+    SymKillField(symtab,SYMTAB_VALUE_FIELD);
+    SymKill(symtab);
+    fclose(stdin);
+    fclose(stdout);
 
 }
 
@@ -2037,11 +2262,21 @@ int main(int argc, char** argv)
 	fileName = argv[1];
 	initialize(fileName);
 	
-		Cminus_parse();
+        Cminus_parse();
   
-	finalize();
+  	finalize();
   
-	return 0;
+  	return 0;
+}
+
+int getValue(int index)
+{
+  return (int)SymGetFieldByIndex(symtab, index, SYMTAB_VALUE_FIELD); 
+}
+
+int setValue(int index, int value)
+{
+  SymPutFieldByIndex(symtab, index, SYMTAB_VALUE_FIELD, (Generic)value); 
 }
 /******************END OF C ROUTINES**********************/
 

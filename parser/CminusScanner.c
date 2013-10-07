@@ -518,17 +518,17 @@ char *Cminus_text;
  * Major differences:
  *
  *  (1) the printed spec is wrong in about sixteen ways in its definition
- *	of numeric constants.  The scanner recognizes a fairly broad class
- * 	of things as constants - it allows both 0 and 1.0 as constants, where
- *	the document would not.
+ *  of numeric constants.  The scanner recognizes a fairly broad class
+ *  of things as constants - it allows both 0 and 1.0 as constants, where
+ *  the document would not.
  *
  *      Feel free to accept the things that the scanner accepts as constants.
- *	The bug is in the original spec document.
+ *  The bug is in the original spec document.
  *
- *	Note: the scanner classifies all kinds of constants as "constant".
- *	It does not make a distinction between character, integer, and floating
- *	point constants.  I think of that distinction as something to look for
- *	in the type checker lab, not something that the grammar should enforce.
+ *  Note: the scanner classifies all kinds of constants as "constant".
+ *  It does not make a distinction between character, integer, and floating
+ *  point constants.  I think of that distinction as something to look for
+ *  in the type checker lab, not something that the grammar should enforce.
  *
  *
  * To hook this thing up to your parser, you will need to take the include
@@ -546,7 +546,8 @@ char *Cminus_text;
 #include <util/dlink.h>
 #include "CminusParser.h"
 
-#line 550 "CminusScanner.c"
+extern SymTable symtab;
+#line 551 "CminusScanner.c"
 
 #define INITIAL 0
 
@@ -736,10 +737,10 @@ YY_DECL
     
         YYSTYPE * yylval;
     
-#line 43 "CminusScanner.l"
+#line 44 "CminusScanner.l"
 
 
-#line 743 "CminusScanner.c"
+#line 744 "CminusScanner.c"
 
     yylval = yylval_param;
 
@@ -826,194 +827,196 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 45 "CminusScanner.l"
+#line 46 "CminusScanner.l"
 { return INTEGER;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 46 "CminusScanner.l"
+#line 47 "CminusScanner.l"
 { return WHILE; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 47 "CminusScanner.l"
+#line 48 "CminusScanner.l"
 { return ELSE; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 48 "CminusScanner.l"
+#line 49 "CminusScanner.l"
 { return EXIT; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 49 "CminusScanner.l"
+#line 50 "CminusScanner.l"
 { return IF; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 50 "CminusScanner.l"
+#line 51 "CminusScanner.l"
 { return READ; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 51 "CminusScanner.l"
+#line 52 "CminusScanner.l"
 { return WRITE; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 52 "CminusScanner.l"
+#line 53 "CminusScanner.l"
 { return RETURN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 54 "CminusScanner.l"
+#line 55 "CminusScanner.l"
 { return NOT;}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 55 "CminusScanner.l"
+#line 56 "CminusScanner.l"
 { return OR;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 56 "CminusScanner.l"
+#line 57 "CminusScanner.l"
 { return AND;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 57 "CminusScanner.l"
+#line 58 "CminusScanner.l"
 { return LE; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 58 "CminusScanner.l"
+#line 59 "CminusScanner.l"
 { return LT; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 59 "CminusScanner.l"
+#line 60 "CminusScanner.l"
 { return GE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 60 "CminusScanner.l"
+#line 61 "CminusScanner.l"
 { return GT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 61 "CminusScanner.l"
+#line 62 "CminusScanner.l"
 { return EQ; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 62 "CminusScanner.l"
+#line 63 "CminusScanner.l"
 { return NE; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 63 "CminusScanner.l"
+#line 64 "CminusScanner.l"
 { return ASSIGN; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 64 "CminusScanner.l"
+#line 65 "CminusScanner.l"
 { return SEMICOLON; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 65 "CminusScanner.l"
+#line 66 "CminusScanner.l"
 { return LBRACE; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 66 "CminusScanner.l"
+#line 67 "CminusScanner.l"
 { return RBRACE; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 67 "CminusScanner.l"
+#line 68 "CminusScanner.l"
 { return LBRACKET; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 68 "CminusScanner.l"
+#line 69 "CminusScanner.l"
 { return RBRACKET; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 69 "CminusScanner.l"
+#line 70 "CminusScanner.l"
 { return LPAREN; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 70 "CminusScanner.l"
+#line 71 "CminusScanner.l"
 { return RPAREN; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 71 "CminusScanner.l"
+#line 72 "CminusScanner.l"
 { return PLUS; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 72 "CminusScanner.l"
+#line 73 "CminusScanner.l"
 { return MINUS; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 73 "CminusScanner.l"
+#line 74 "CminusScanner.l"
 { return TIMES; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 74 "CminusScanner.l"
+#line 75 "CminusScanner.l"
 { return DIVIDE;}
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 75 "CminusScanner.l"
+#line 76 "CminusScanner.l"
 { return COMMA;}
 	YY_BREAK
 case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
-#line 76 "CminusScanner.l"
-{ Cminus_lval.s = strdup(Cminus_text); return STRING; } // For strings, make sure lval.s is assigned
+#line 77 "CminusScanner.l"
+{ Cminus_lval = SymIndex(symtab, substr(Cminus_text, 1, Cminus_leng-2));
+                                  return STRING; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 77 "CminusScanner.l"
-{ Cminus_lval.s = strdup(Cminus_text); return IDENTIFIER; } // For identifiers, make sure lval.s is assigned so we know the variable name
+#line 79 "CminusScanner.l"
+{ Cminus_lval = SymIndex(symtab, ssave(Cminus_text)); 
+                                  return IDENTIFIER; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 78 "CminusScanner.l"
-{ Cminus_lval.i = atoi(Cminus_text); return INTCON; } // For int constants, make sure lval.i is assigned
+#line 81 "CminusScanner.l"
+{ Cminus_lval = atoi(Cminus_text); return INTCON; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 79 "CminusScanner.l"
+#line 82 "CminusScanner.l"
 { ; }
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 80 "CminusScanner.l"
+#line 83 "CminusScanner.l"
 { Cminus_lineno++;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 81 "CminusScanner.l"
+#line 84 "CminusScanner.l"
 {
-					fprintf(stderr, "Scanner: lexical error '%s'.\n", Cminus_text); 
-				}
+          fprintf(stderr, "Scanner: lexical error '%s'.\n", Cminus_text); 
+        }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 84 "CminusScanner.l"
+#line 87 "CminusScanner.l"
 ECHO;
 	YY_BREAK
-#line 1017 "CminusScanner.c"
+#line 1020 "CminusScanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2010,7 +2013,7 @@ void Cminus_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 84 "CminusScanner.l"
+#line 87 "CminusScanner.l"
 
 
 
