@@ -30,10 +30,14 @@ EXTERN(int,Cminus_lex,(void));
 char *fileName;
 
 const char *ASSEMBLY_HEADER =
-"	.section        .rodata\n"
+"	.section        .rodata\n";
+
+const char *BASIC_PRINTFS =
 ".int_wformat: .string \"%d\\n\"\n"
 ".str_wformat: .string \"%s\\n\"\n"
-".int_rformat: .string \"%d\"\n"
+".int_rformat: .string \"%d\"\n";
+
+const char *OTHER = 
 "	.text\n"
 "	.globl main\n"
 "	.type main,@function\n"
@@ -48,6 +52,8 @@ const char *ASSEMBLY_FOOTER =
 extern int Cminus_lineno;
 
 SymTable table;
+int var_count;
+int str_const_count;
 
 %}
 
@@ -128,7 +134,7 @@ ProcedureBody :
 
 
 DeclList : 
-	Type IdentifierList  SEMICOLON 		
+	Type IdentifierList SEMICOLON 		
 	| DeclList Type IdentifierList SEMICOLON
 		
 ;
@@ -140,7 +146,9 @@ IdentifierList :
 ;
 
 VarDecl : 
-	IDENTIFIER
+	IDENTIFIER {
+		++var_count;
+	}
 	| IDENTIFIER LBRACKET INTCON RBRACKET 
 ;
 
@@ -162,7 +170,12 @@ Statement :
 // First check if the field exists and reprot an error if it doesn't
 Assignment : 
 	Variable ASSIGN Expr SEMICOLON {
-		setValue($1, $3);
+		// setValue($1, $3);
+		printf("movq $_gp,%%rbx\n");
+    printf("addq $0, %%rbx\n");
+    // printf("movl $5, %%ecx\n");
+    printf("movl $%d, %%ecx\n", $3);
+    printf("movl %%ecx, (%%rbx)\n");
 	}
 ;
 				
@@ -197,13 +210,37 @@ WhileToken :
 // a string constant
 IOStatement : 
 	READ LPAREN Variable RPAREN SEMICOLON {
-		//printf("%d\n", getValue($3)); // Get variable value and print it
+		printf("movq $_gp,%%rbx\n");
+    printf("addq $4, %%rbx\n");
+    printf("movl $.int_rformat, %%edi\n");
+    printf("movl %%ebx, %%esi\n");
+    printf("movl $0, %%eax\n");
+    printf("call scanf\n");
 	}
 	| WRITE LPAREN Expr RPAREN SEMICOLON {
-		printf("%d\n", $3); // Print the outcome of the expression
+		printf("movl $7, %%ebx\n");
+		// printf("movl %s, %ebx\n", correct_register); TODO: USE THIS
+
+    printf("movl %%ebx, %%esi\n");
+    printf("movl $0, %%eax\n");
+    printf("movl $.int_wformat, %%edi\n");
+    printf("call printf\n");
+		// OLD printf("%d\n", $3); // Print the outcome of the expression
 	}
 	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
-		printf("%s\n", (char *)SymGetFieldByIndex(table, $3, SYM_NAME_FIELD)); // Print the string constant
+		// add the string constant to header
+		printf(".string_const%d: .string \"%s\"", str_const_count, $3); // TODO: escape stuff out of $3
+
+		printf("movl $.string_const0, %%ebx\n");
+		//printf("movl %s, %ebx\n", constant_name); // TODO: USE THIS
+
+    printf("movl %%ebx, %%esi\n");
+    printf("movl $0, %%eax\n");
+    printf("movl $.str_wformat, %%edi\n"); // TODO: Pick correct string constant
+    printf("call printf\n");
+		// printf("%s\n", (char *)SymGetFieldByIndex(table, $3, SYM_NAME_FIELD)); // Print the string constant
+
+		++str_const_count;
 	}
 ;
 
@@ -365,6 +402,11 @@ static void initialize(char* inputFileName) {
 		  exit(-1);
 		}
 
+	// We keep track of variable count for header global data declaration
+	var_count = 0;
+	str_const_count = 0;
+
+	// Print out the initial header every file has
 	printf("%s\n", ASSEMBLY_HEADER);
 
 	// Initialize the symbol table
@@ -373,6 +415,9 @@ static void initialize(char* inputFileName) {
 }
 
 static void finalize() {
+	printf("%s\n", ASSEMBLY_FOOTER);
+	printf("var count %d", var_count);
+
 	SymKillField(table,SYMTAB_VALUE_FIELD);
   SymKill(table);
 	fclose(stdin);

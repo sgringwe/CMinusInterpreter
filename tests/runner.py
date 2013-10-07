@@ -18,6 +18,8 @@ failure_occurred = False
 # Go through each .cmc file in input and run it
 # Then, compare the output to that of the gold file.
 # If it matches, success. Otherwise we have an error.
+passed = 0
+failed = 0
 for fn in os.listdir(input_dir):
    if fn.endswith('.cm'):
       print('Running ' + fn)
@@ -26,18 +28,33 @@ for fn in os.listdir(input_dir):
       executable_name = file_name.replace('.cm', '')
       output_name = file_name.replace('.cm', '.output')
       call(["./cmc", file_name])
-      call(["gcc", "-o", executable_name, assembly_name])
-      call(["./" + executable_name, ">", output_name])
+      try:
+        call(["gcc", "-o", executable_name, assembly_name])
+      except:
+        print "gcc call failed"
+
+      try:
+        call(["./" + executable_name, ">", output_name])
+      except:
+        print "Execution of output failed"
       # shutil.copyfile('input/' + fn.replace('.cm', '.s'), 'tests/' + fn.replace('.cm', '.s'))
 
-      same = filecmp.cmp(output_name, 'tests/' + fn.replace('.cm', '.s'))
+      same = False
+      try:
+        same = filecmp.cmp(output_name, 'tests/' + fn.replace('.cm', '.s'))
+      except:
+        print "Comparision failed. No such file."
 
       if(same):
+        passed += 1
         print 'Test passed for ' + fn + '!'
       else:
+        failed += 1
         failure_occurred = True
         print 'FAILURE for ' + fn + '. This could be due to many reasons, including invalid gold file.'
-      
+
+print 'Passed: ' + str(passed)
+print 'Failed: ' + str(failed)
 if failure_occurred:
   print 'At least one of the tests FAILED'
 else:
