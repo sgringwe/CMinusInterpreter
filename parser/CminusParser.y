@@ -54,6 +54,8 @@ extern int Cminus_lineno;
 SymTable table;
 int var_count;
 int str_const_count;
+char statements[99999]; // TODO: FIX
+char printfs[9999]; // List of printf options
 
 %}
 
@@ -171,11 +173,16 @@ Statement :
 Assignment : 
 	Variable ASSIGN Expr SEMICOLON {
 		// setValue($1, $3);
-		printf("movq $_gp,%%rbx\n");
-    printf("addq $0, %%rbx\n");
-    // printf("movl $5, %%ecx\n");
-    printf("movl $%d, %%ecx\n", $3);
-    printf("movl %%ecx, (%%rbx)\n");
+		buffer("movq $_gp,%rbx\n");
+    buffer("addq $0, %rbx\n");
+
+    // printf("movl $5, %ecx\n");
+
+    char temp[80];
+		sprintf(temp, "movl $%d, %%ecx\n", $3);
+		buffer(temp);
+
+    buffer("movl %ecx, (%rbx)\n");
 	}
 ;
 				
@@ -210,35 +217,35 @@ WhileToken :
 // a string constant
 IOStatement : 
 	READ LPAREN Variable RPAREN SEMICOLON {
-		printf("movq $_gp,%%rbx\n");
-    printf("addq $4, %%rbx\n");
-    printf("movl $.int_rformat, %%edi\n");
-    printf("movl %%ebx, %%esi\n");
-    printf("movl $0, %%eax\n");
-    printf("call scanf\n");
+		buffer("movq $_gp,%rbx\n");
+    buffer("addq $4, %rbx\n");
+    buffer("movl $.int_rformat, %edi\n");
+    buffer("movl %ebx, %esi\n");
+    buffer("movl $0, %eax\n");
+    buffer("call scanf\n");
 	}
 	| WRITE LPAREN Expr RPAREN SEMICOLON {
-		printf("movl $7, %%ebx\n");
-		// printf("movl %s, %ebx\n", correct_register); TODO: USE THIS
+		char temp[80];
+		sprintf(temp, "movl $%d, %%ebx\n", $3);
+		buffer(temp);
 
-    printf("movl %%ebx, %%esi\n");
-    printf("movl $0, %%eax\n");
-    printf("movl $.int_wformat, %%edi\n");
-    printf("call printf\n");
-		// OLD printf("%d\n", $3); // Print the outcome of the expression
+    buffer("movl %ebx, %esi\n");
+    buffer("movl $0, %eax\n");
+    buffer("movl $.int_wformat, %edi\n");
+    buffer("call printf\n");
 	}
 	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
-		// add the string constant to header
-		printf(".string_const%d: .string \"%s\"", str_const_count, $3); // TODO: escape stuff out of $3
-
-		printf("movl $.string_const0, %%ebx\n");
+		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table,$3, SYM_NAME_FIELD)); // TODO: escape stuff out of $3
+		
+		char temp[80];
+		sprintf(temp, "movl $.string_const%d, %%ebx\n", str_const_count);
+		buffer(temp);
 		//printf("movl %s, %ebx\n", constant_name); // TODO: USE THIS
 
-    printf("movl %%ebx, %%esi\n");
-    printf("movl $0, %%eax\n");
-    printf("movl $.str_wformat, %%edi\n"); // TODO: Pick correct string constant
-    printf("call printf\n");
-		// printf("%s\n", (char *)SymGetFieldByIndex(table, $3, SYM_NAME_FIELD)); // Print the string constant
+    buffer("movl %ebx, %esi\n");
+    buffer("movl $0, %eax\n");
+    buffer("movl $.str_wformat, %edi\n"); // TODO: Pick correct string constant
+    buffer("call printf\n");
 
 		++str_const_count;
 	}
@@ -407,7 +414,8 @@ static void initialize(char* inputFileName) {
 	str_const_count = 0;
 
 	// Print out the initial header every file has
-	printf("%s\n", ASSEMBLY_HEADER);
+	printf("%s", ASSEMBLY_HEADER);
+	printf("%s", BASIC_PRINTFS);
 
 	// Initialize the symbol table
 	table = SymInit(SYMTABLE_SIZE);
@@ -415,8 +423,11 @@ static void initialize(char* inputFileName) {
 }
 
 static void finalize() {
-	printf("%s\n", ASSEMBLY_FOOTER);
-	printf("var count %d", var_count);
+	printf("%s", printfs);
+	printf("	.comm _gp, %d, 4\n", var_count * 4);
+	printf("%s", OTHER);
+	printf("%s", statements);
+	printf("%s", ASSEMBLY_FOOTER);
 
 	SymKillField(table,SYMTAB_VALUE_FIELD);
   SymKill(table);
@@ -432,13 +443,17 @@ int setValue(int index, int value) {
   SymPutFieldByIndex(table, index, SYMTAB_VALUE_FIELD, (Generic)value); 
 }
 
+void buffer(char *add) {
+	sprintf(statements, "%s	%s", statements, add);
+}
+
 int main(int argc, char** argv)
 
 {	
 	fileName = argv[1];
 	initialize(fileName);
 	
-		Cminus_parse();
+	Cminus_parse();
   
 	finalize();
   
