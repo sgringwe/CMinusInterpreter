@@ -1,5 +1,8 @@
 /*******************************************************/
 /*                     Cminus Parser                   */
+/* Student: Scott Ringwelski
+/* Program: CMinusProject1
+/* An interpreter for the CMinus language
 /*                                                     */
 /*******************************************************/
 
@@ -26,16 +29,14 @@ EXTERN(int,Cminus_lex,(void));
 
 char *fileName;
 
-SymTable symtab;
-
 extern int Cminus_lineno;
+
+SymTable table;
 
 %}
 
 %name-prefix="Cminus_"
 %defines
-
-%start Program
 
 %token AND
 %token ELSE
@@ -78,364 +79,258 @@ extern int Cminus_lineno;
 %left LT LE GT GE NE EQ
 %left PLUS MINUS
 %left TIMES DIVDE
+%start Program
 
 /***********************PRODUCTIONS****************************/
 %%
-   Program		: Procedures 
-		{
-			//printf("<Program> -> <Procedures>\n");
-		}
-	  	| DeclList Procedures
-		{
-			//printf("<Program> -> <DeclList> <Procedures>\n");
-		}
-          ;
+Program	: 
+	Procedures
+	| DeclList Procedures
+;
 
-Procedures 	: ProcedureDecl Procedures
-		{
-			//printf("<Procedures> -> <ProcedureDecl> <Procedures>\n");
-		}
-	   	|
-		{
-			//printf("<Procedures> -> epsilon\n");
-		}
-	   	;
+Procedures 	: 
+	ProcedureDecl Procedures 
+	| 
+;
 
-ProcedureDecl : ProcedureHead ProcedureBody
-		{
-			//printf("<ProcedureDecl> -> <ProcedureHead> <ProcedureBody>\n");
-		}
-              ;
+ProcedureDecl : 
+	ProcedureHead ProcedureBody 
+;
 
-ProcedureHead : FunctionDecl DeclList 
-		{
-			//printf("<ProcedureHead> -> <FunctionDecl> <DeclList>\n");
-		}
-	      | FunctionDecl
-		{
-			//printf("<ProcedureHead> -> <FunctionDecl>\n");
-		}
-              ;
+ProcedureHead : 
+	FunctionDecl DeclList 
+	| FunctionDecl 
+;
 
-FunctionDecl :  Type IDENTIFIER LPAREN RPAREN LBRACE 
-		{
-			//printf("<FunctionDecl> ->  <Type> <IDENTIFIER> <LP> <RP> <LBR>\n"); 
-		}
-	      	;
+FunctionDecl :  
+	Type IDENTIFIER LPAREN RPAREN LBRACE 
+;
 
-ProcedureBody : StatementList RBRACE
-		{
-			//printf("<ProcedureBody> -> <StatementList> <RBR>\n");
-		}
-	      ;
+ProcedureBody : 
+	StatementList RBRACE 
+;
 
 
-DeclList 	: Type IdentifierList  SEMICOLON 
-		{
-			//printf("<DeclList> -> <Type> <IdentifierList> <SC>\n");
-		}		
-	   	| DeclList Type IdentifierList SEMICOLON
-	 	{
-			//printf("<DeclList> -> <DeclList> <Type> <IdentifierList> <SC>\n");
-	 	}
-          	;
+DeclList : 
+	Type IdentifierList  SEMICOLON 		
+	| DeclList Type IdentifierList SEMICOLON
+		
+;
 
 
-IdentifierList 	: VarDecl  
-		{
-			//printf("<IdentifierList> -> <VarDecl>\n");
-		}
-						
-                | IdentifierList COMMA VarDecl
-		{
-			//printf("<IdentifierList> -> <IdentifierList> <CM> <VarDecl>\n");
-		}
-                ;
+IdentifierList : 
+	VarDecl 
+	| IdentifierList COMMA VarDecl 
+;
 
-VarDecl 	: IDENTIFIER
-		{ 
-			//printf("<VarDecl> -> <IDENTIFIER\n");
-		}
-		| IDENTIFIER LBRACKET INTCON RBRACKET
-                {
-			//printf("<VarDecl> -> <IDENTIFIER> <LBK> <INTCON> <RBK>\n");
-		}
-		;
+VarDecl : 
+	IDENTIFIER
+	| IDENTIFIER LBRACKET INTCON RBRACKET 
+;
 
-Type     	: INTEGER 
-		{ 
-			//printf("<Type> -> <INTEGER>\n");
-		}
-                ;
+Type : 
+	INTEGER 
+;
 
-Statement 	: Assignment
-		{ 
-			//printf("<Statement> -> <Assignment>\n");
-		}
-                | IfStatement
-		{ 
-			//printf("<Statement> -> <IfStatement>\n");
-		}
-		| WhileStatement
-		{ 
-			//printf("<Statement> -> <WhileStatement>\n");
-		}
-                | IOStatement 
-		{ 
-			//printf("<Statement> -> <IOStatement>\n");
-		}
-		| ReturnStatement
-		{ 
-			//printf("<Statement> -> <ReturnStatement>\n");
-		}
-		| ExitStatement	
-		{ 
-			//printf("<Statement> -> <ExitStatement>\n");
-		}
-		| CompoundStatement
-		{ 
-			//printf("<Statement> -> <CompoundStatement>\n");
-		}
-                ;
+Statement : 
+	Assignment 
+	| IfStatement
+	| WhileStatement
+	| IOStatement 
+	| ReturnStatement
+	| ExitStatement	
+	| CompoundStatement
+;
 
-Assignment      : Variable ASSIGN Expr SEMICOLON
-		{
-			setValue($1, $3);
-			//printf("<Assignment> -> <Variable> <ASSIGN> <Expr> <SC>\n");
-		}
-                ;
+// When an assignment is done, update the symbol table field.
+// First check if the field exists and reprot an error if it doesn't
+Assignment : 
+	Variable ASSIGN Expr SEMICOLON {
+		setValue($1, $3);
+	}
+;
 				
-IfStatement	: IF TestAndThen ELSE CompoundStatement
-		{
-			//printf("<IfStatement> -> <IF> <TestAndThen> <ELSE> <CompoundStatement>\n");
-		}
-		| IF TestAndThen
-		{
-			//printf("<IfStatement> -> <IF> <TestAndThen>\n");
-		}
-		;
+IfStatement	: 
+	IF TestAndThen ELSE CompoundStatement 
+	| IF TestAndThen 
+;
 		
 				
-TestAndThen	: Test CompoundStatement
-		{
-			//printf("<TestAndThen> -> <Test> <CompoundStatement>\n");
-		}
-		;
+TestAndThen	: 
+	Test CompoundStatement 
+;
 				
-Test		: LPAREN Expr RPAREN
-		{
-			//printf("<Test> -> <LP> <Expr> <RP>\n");
-		}
-		;
+Test : 
+	LPAREN Expr RPAREN
+;
 	
 
-WhileStatement  : WhileToken WhileExpr Statement
-		{
-			//printf("<WhileStatement> -> <WhileToken> <WhileExpr> <Statement>\n");
-		}
-                ;
-                
-WhileExpr	: LPAREN Expr RPAREN
-		{
-			//printf("<WhileExpr> -> <LP> <Expr> <RP>\n");
-		}
-		;
+WhileStatement : 
+	WhileToken WhileExpr Statement 
+;
 				
-WhileToken	: WHILE
-		{
-			//printf("<WhileToken> -> <WHILE>\n");
-		}
-		;
-
-
-IOStatement     : READ LPAREN Variable RPAREN SEMICOLON
-		{
-			//printf("<IOStatement> -> <READ> <LP> <Variable> <RP> <SC>\n");
-		}
-                | WRITE LPAREN Expr RPAREN SEMICOLON
-		{
-			printf("%d\n", $3);
-			//printf("<IOStatement> -> <WRITE> <LP> <Expr> <RP> <SC>\n");
-		}
-                | WRITE LPAREN StringConstant RPAREN SEMICOLON         
-		{
-		  printf("%s\n", (char *)SymGetFieldByIndex(symtab,$3, SYM_NAME_FIELD));
-			//printf("<IOStatement> -> <WRITE> <LP> <StringConstant> <RP> <SC>\n");
-		}
-                ;
-
-ReturnStatement : RETURN Expr SEMICOLON
-		{
-			//printf("<ReturnStatement> -> <RETURN> <Expr> <SC>\n");
-		}
-                ;
-
-ExitStatement 	: EXIT SEMICOLON
-		{
-			//printf("<ExitStatement> -> <EXIT> <SC>\n");
-		}
-		;
-
-CompoundStatement : LBRACE StatementList RBRACE
-		{
-			//printf("<CompoundStatement> -> <LBR> <StatementList> <RBR>\n");
-		}
-                ;
-
-StatementList   : Statement
-		{		
-			//printf("<StatementList> -> <Statement>\n");
-		}
-                | StatementList Statement
-		{		
-			//printf("<StatementList> -> <StatementList> <Statement>\n");
-		}
-                ;
-
-Expr            : SimpleExpr
-		{
-			$$ = $1;
-			//printf("<Expr> -> <SimpleExpr>\n");
-		}
-                | Expr OR SimpleExpr 
-		{
-		        $$ = $1 | $3;
-			//printf("<Expr> -> <Expr> <OR> <SimpleExpr> \n");
-		}
-                | Expr AND SimpleExpr 
-		{
-			$$ = $1 & $3;
-			//printf("<Expr> -> <Expr> <AND> <SimpleExpr> \n");
-		}
-                | NOT SimpleExpr 
-		{
-			$$ = $2 ^ 1;
-			//printf("<Expr> -> <NOT> <SimpleExpr> \n");
-		}
-                ;
-
-SimpleExpr	: AddExpr
-		{
-			$$ = $1;
-			//printf("<SimpleExpr> -> <AddExpr>\n");
-		}
-                | SimpleExpr EQ AddExpr
-		{
-		        $$ = ($1 == $3);
-			//printf("<SimpleExpr> -> <SimpleExpr> <EQ> <AddExpr> \n");
-		}
-                | SimpleExpr NE AddExpr
-		{
-		        $$ = ($1 != $3);
-			//printf("<SimpleExpr> -> <SimpleExpr> <NE> <AddExpr> \n");
-		}
-                | SimpleExpr LE AddExpr
-		{
-		        $$ = ($1 <= $3);
-			//printf("<SimpleExpr> -> <SimpleExpr> <LE> <AddExpr> \n");
-		}
-                | SimpleExpr LT AddExpr
-		{
-		        $$ = ($1 < $3);
-			//printf("<SimpleExpr> -> <SimpleExpr> <LT> <AddExpr> \n");
-		}
-                | SimpleExpr GE AddExpr
-		{
-		        $$ = ($1 >= $3);
-			//printf("<SimpleExpr> -> <SimpleExpr> <GE> <AddExpr> \n");
-		}
-                | SimpleExpr GT AddExpr
-		{
-			//printf("<SimpleExpr> -> <SimpleExpr> <GT> <AddExpr> \n");
-		        $$ = ($1 > $3);
-		}
-                ;
-
-AddExpr		:  MulExpr            
-		{
-			$$ = $1;
-			//printf("<AddExpr> -> <MulExpr>\n");
-		}
-                |  AddExpr PLUS MulExpr
-		{
-			$$ = $1 + $3;
-			//printf("<AddExpr> -> <AddExpr> <PLUS> <MulExpr> \n");
-		}
-                |  AddExpr MINUS MulExpr
-		{
-			$$ = $1 - $3;
-			//printf("<AddExpr> -> <AddExpr> <MINUS> <MulExpr> \n");
-		}
-                ;
-
-MulExpr		:  Factor
-		{
-			$$ = $1;
-			//printf("<MulExpr> -> <Factor>\n");
-		}
-                |  MulExpr TIMES Factor
-		{
-			$$ = $1 * $3;
-			//printf("<MulExpr> -> <MulExpr> <TIMES> <Factor> \n");
-		}
-                |  MulExpr DIVIDE Factor
-		{
-			$$ = $1 / $3;
-			//printf("<MulExpr> -> <MulExpr> <DIVIDE> <Factor> \n");
-		}		
-                ;
+WhileExpr : 
+	LPAREN Expr RPAREN 
+;
 				
-Factor          : Variable
-		{ 
-			$$ = getValue($1);
-			//printf("<Factor> -> <Variable>\n");
-		}
-                | Constant
-		{ 
-			$$ = $1;
-			//printf("<Factor> -> <Constant>\n");
-		}
-                | IDENTIFIER LPAREN RPAREN
-       		{	
-			//printf("<Factor> -> <IDENTIFIER> <LP> <RP>\n");
-		}
-         	| LPAREN Expr RPAREN
-		{
-			$$ = $2;
-			//printf("<Factor> -> <LP> <Expr> <RP>\n");
-		}
-                ;  
+WhileToken : 
+	WHILE 
+;
 
-Variable        : IDENTIFIER
-		{
-			$$ = $1;
-			//printf("<Variable> -> <IDENTIFIER>\n");
-		}
-                | IDENTIFIER LBRACKET Expr RBRACKET    
-               	{
-			//printf("<Variable> -> <IDENTIFIER> <LBK> <Expr> <RBK>\n");
-               	}
-                ;			       
+// This is where content is printed. It will either be an integer (first 2 cases) or
+// a string constant
+IOStatement : 
+	READ LPAREN Variable RPAREN SEMICOLON {
+		//printf("%d\n", getValue($3)); // Get variable value and print it
+	}
+	| WRITE LPAREN Expr RPAREN SEMICOLON {
+		printf("%d\n", $3); // Print the outcome of the expression
+	}
+	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
+		printf("%s\n", (char *)SymGetFieldByIndex(table, $3, SYM_NAME_FIELD)); // Print the string constant
+	}
+;
 
-StringConstant 	: STRING
-		{ 
-		       $$ = $1;
-			//printf("<StringConstant> -> <STRING>\n");
-		}
-                ;
+ReturnStatement : 
+	RETURN Expr SEMICOLON
+		
+;
 
-Constant        : INTCON
-		{ 
-			$$ = $1;
-			//printf("<Constant> -> <INTCON>\n");
-		}
-                ;
+ExitStatement 
+	: EXIT SEMICOLON
+;
+
+CompoundStatement : 
+	LBRACE StatementList RBRACE 
+;
+
+StatementList : 
+	Statement 
+	| StatementList Statement 
+;
+
+// Straight forward translation
+Expr : 
+	SimpleExpr {
+		$$ = $1;
+	}
+	| Expr OR SimpleExpr {
+		$$ = $1 || $3;
+	}
+	| Expr AND SimpleExpr {
+		$$ = $1 && $3;
+	}
+	| NOT SimpleExpr {
+		$$ = ($2 == 0) ? 1 : 0;
+	}
+;
+
+// Straightforward translation
+SimpleExpr : 
+	AddExpr {
+		$$ = $1;
+	}
+	| SimpleExpr EQ AddExpr {
+		$$ = ($1 == $3) ? 1 : 0;
+	}
+	| SimpleExpr NE AddExpr {
+		$$ = ($1 == $3) ? 0 : 1;
+	}
+	| SimpleExpr LE AddExpr {
+		$$ = ($1 <= $3) ? 1 : 0;
+	}
+	| SimpleExpr LT AddExpr {
+		$$ = ($1 < $3) ? 1 : 0;
+	}
+	| SimpleExpr GE AddExpr {
+		$$ = ($1 >= $3) ? 1 : 0;
+	}
+	| SimpleExpr GT AddExpr {
+		$$ = ($1 > $3) ? 1 : 0;
+	}
+;
+
+// Addition expression
+AddExpr	: 
+	MulExpr {
+		$$ = $1;
+	}
+	| AddExpr PLUS MulExpr {
+		$$ = $1 + $3;
+	}
+	| AddExpr MINUS MulExpr {
+		$$ = $1 - $3;
+	}
+;
+
+// Multiple Expression
+MulExpr : 
+	Factor {
+		$$ = $1;
+	}
+	|  MulExpr TIMES Factor {
+		$$ = $1 * $3;
+	}
+	|  MulExpr DIVIDE Factor {
+		$$ = $1 / $3;
+	}		
+;
+
+// For variables, look up the value and return it.
+// For constants, function calls and parenthesised expressions, return the value 
+Factor : 
+	Variable { 
+		$$ = getValue($1);
+	}
+	| Constant { 
+		$$ = $1;
+	}
+	| IDENTIFIER LPAREN RPAREN {
+		$$ = $1;
+	}
+	| LPAREN Expr RPAREN {
+		$$ = $2;
+	}
+;  
+
+// Either a variable or function.
+Variable : 
+	IDENTIFIER {
+		$$ = $1;
+	}
+	| IDENTIFIER LBRACKET Expr RBRACKET {
+		$$ = $1;
+	}
+;
+
+// String constants include the ''s when passed from flex. Remove those and then return the string.
+StringConstant : 
+	STRING {
+		$$ = $1;
+	}
+;
+
+// Simply return the integer for now (only variable type)
+Constant : 
+	INTCON { 
+		$$ = $1;
+	}
+;
 
 %%
 
 
 /********************C ROUTINES *********************************/
 
+// Checks if a field exists and if it does not, calls a Cminus_error
+void checkFieldExists(char *s)
+{
+	if (!SymFieldExists(table, s)) {
+		Cminus_error("Undefined reference\n");
+	}
+}
+
+// Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)
 {
   fprintf(stderr,"%s: line %d: %s\n",fileName,Cminus_lineno,s);
@@ -448,31 +343,38 @@ int Cminus_wrap() {
 static void initialize(char* inputFileName) {
 
 	stdin = freopen(inputFileName,"r",stdin);
-        if (stdin == NULL) {
-          fprintf(stderr,"Error: Could not open file %s\n",inputFileName);
-          exit(-1);
-        }
+		if (stdin == NULL) {
+		  fprintf(stderr,"Error: Could not open file %s\n",inputFileName);
+		  exit(-1);
+		}
 
 	char* dotChar = rindex(inputFileName,'.');
 	int endIndex = strlen(inputFileName) - strlen(dotChar);
 	char *outputFileName = nssave(2,substr(inputFileName,0,endIndex),".s");
 	stdout = freopen(outputFileName,"w",stdout);
-        if (stdout == NULL) {
-          fprintf(stderr,"Error: Could not open file %s\n",outputFileName);
-          exit(-1);
-        }
+		if (stdout == NULL) {
+		  fprintf(stderr,"Error: Could not open file %s\n",outputFileName);
+		  exit(-1);
+		}
 
-	 symtab = SymInit(SYMTABLE_SIZE);
-	 SymInitField(symtab,SYMTAB_VALUE_FIELD,(Generic)-1,NULL);
+	// Initialize the symbol table
+	table = SymInit(SYMTABLE_SIZE);
+	SymInitField(table,SYMTAB_VALUE_FIELD,(Generic)-1,NULL);
 }
 
 static void finalize() {
+	SymKillField(table,SYMTAB_VALUE_FIELD);
+  SymKill(table);
+	fclose(stdin);
+	fclose(stdout);
+}
 
-    SymKillField(symtab,SYMTAB_VALUE_FIELD);
-    SymKill(symtab);
-    fclose(stdin);
-    fclose(stdout);
+int getValue(int index) {
+  return (int)SymGetFieldByIndex(table, index, SYMTAB_VALUE_FIELD); 
+}
 
+int setValue(int index, int value) {
+  SymPutFieldByIndex(table, index, SYMTAB_VALUE_FIELD, (Generic)value); 
 }
 
 int main(int argc, char** argv)
@@ -481,20 +383,10 @@ int main(int argc, char** argv)
 	fileName = argv[1];
 	initialize(fileName);
 	
-        Cminus_parse();
+		Cminus_parse();
   
-  	finalize();
+	finalize();
   
-  	return 0;
-}
-
-int getValue(int index)
-{
-  return (int)SymGetFieldByIndex(symtab, index, SYMTAB_VALUE_FIELD); 
-}
-
-int setValue(int index, int value)
-{
-  SymPutFieldByIndex(symtab, index, SYMTAB_VALUE_FIELD, (Generic)value); 
+	return 0;
 }
 /******************END OF C ROUTINES**********************/
