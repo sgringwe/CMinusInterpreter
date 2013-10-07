@@ -1946,14 +1946,6 @@ yyreturn:
 
 /********************C ROUTINES *********************************/
 
-// Checks if a field exists and if it does not, calls a Cminus_error
-void checkFieldExists(char *s)
-{
-	if (!SymFieldExists(table, s)) {
-		Cminus_error("Undefined reference\n");
-	}
-}
-
 // Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)
 {
