@@ -41,7 +41,8 @@ for fn in os.listdir(input_dir):
         print 'Executing executable to output...'
         print executable_name
         print output_name
-        call(["./" + executable_name, ">", output_name])
+        f = open(output_name, "w")
+        call(["./" + executable_name], stdout=f)
       except:
         print "Execution of output failed"
       # shutil.copyfile('input/' + fn.replace('.cm', '.s'), 'tests/' + fn.replace('.cm', '.s'))
