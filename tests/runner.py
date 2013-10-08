@@ -39,8 +39,8 @@ for fn in os.listdir(input_dir):
 
       try:
         print 'Executing executable to output...'
-        puts executable_name
-        puts output_name
+        print executable_name
+        print output_name
         call(["./" + executable_name, ">", output_name])
       except:
         print "Execution of output failed"
