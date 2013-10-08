@@ -149,6 +149,11 @@ IdentifierList :
 
 VarDecl : 
 	IDENTIFIER {
+		// save in the symbol table the:
+		// name
+		// type (always int for now)
+		// offset
+		SymInitField(table, $1, 'int', var_count * 4);
 		++var_count;
 	}
 	| IDENTIFIER LBRACKET INTCON RBRACKET 
@@ -339,7 +344,15 @@ MulExpr :
 // For variables, look up the value and return it.
 // For constants, function calls and parenthesised expressions, return the value 
 Factor : 
-	Variable { 
+	Variable {
+		getValue($1);
+		buffer("movq $_gp,%rbx\n");
+
+		char temp[80];
+		sprintf(temp, "addq $%d, %rbx\n", $1);
+		buffer(temp);
+
+    buffer("movl (%rbx), %eax");
 		$$ = getValue($1);
 	}
 	| Constant { 
@@ -356,7 +369,23 @@ Factor :
 // Either a variable or function.
 Variable : 
 	IDENTIFIER {
-		$$ = $1;
+		int offset = (int)SymGetField(table, $1, 'int')
+
+		// Reg resultReg = allocateReg();
+		// allocateAddress(offset, storageType);
+
+		buffer("movq $_gp, %rbx\n");
+
+		char temp[80];
+		sprintf(temp, "addq $%d, %rbx\n", offset);
+		buffer(temp);
+		
+		buffer("movl (%rbx), %eax\n");
+
+		// emitLoad(addReg, resultReg);
+		// free(addReg);
+
+		$$ = resultReg;
 	}
 	| IDENTIFIER LBRACKET Expr RBRACKET {
 		$$ = $1;
@@ -381,6 +410,10 @@ Constant :
 
 
 /********************C ROUTINES *********************************/
+
+int getOffset(char *name) {
+
+}
 
 // Prints out an error with file/line/cursor position.
 void Cminus_error(char *s)

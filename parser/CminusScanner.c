@@ -546,7 +546,7 @@ char *Cminus_text;
 #include <util/dlink.h>
 #include "CminusParser.h"
 
-extern SymTable table;
+extern SymTable symtab;
 #line 551 "CminusScanner.c"
 
 #define INITIAL 0
@@ -979,13 +979,13 @@ case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
 #line 77 "CminusScanner.l"
-{ Cminus_lval = SymIndex(table, substr(Cminus_text, 1, Cminus_leng-2));
+{ Cminus_lval = SymIndex(symtab, substr(Cminus_text, 1, Cminus_leng-2));
                                   return STRING; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 79 "CminusScanner.l"
-{ Cminus_lval = SymIndex(table, ssave(Cminus_text)); 
+{ Cminus_lval = SymIndex(symtab, ssave(Cminus_text)); 
                                   return IDENTIFIER; }
 	YY_BREAK
 case 33:
