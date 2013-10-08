@@ -1557,7 +1557,7 @@ yyreduce:
 		// name
 		// type (always int for now)
 		// offset
-		SymInitField(table, (yyvsp[(1) - (1)]), 'int', var_count * 4);
+		setValue((yyvsp[(1) - (1)]), var_count * 4);
 		++var_count;
 	;}
     break;
@@ -1606,7 +1606,7 @@ yyreduce:
 		emit("movl", register_names[reg1], register_names[reg2]); // move result into reg2
 		emit("movl", "$0", register_names[reg3]); // set reg3 to be 0
 		emit("movl", "$.int_wformat", register_names[reg4]); // set reg4 to be address of $.int_wformat
-		buffer("call printf"); // call printf
+		buffer("call printf\n"); // call printf
 
 		freeRegister(reg1);
 		freeRegister(reg2);
@@ -1629,7 +1629,7 @@ yyreduce:
   case 35:
 #line 286 "CminusParser.y"
     {
-		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table,(yyvsp[(3) - (5)]), SYM_NAME_FIELD)); // TODO: escape stuff out of $3
+		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table, (yyvsp[(3) - (5)]), SYM_NAME_FIELD)); // TODO: escape stuff out of $3
 		
 		char temp[80];
 		sprintf(temp, "movl $.string_const%d, %%ebx\n", str_const_count);
@@ -2054,8 +2054,8 @@ yyreturn:
 
 /********************C ROUTINES *********************************/
 
-int getOffset(char *name) {
-	(int)SymGetField(table, name, 'int');
+int getOffset(int index) {
+	return (int)SymGetFieldByIndex(table, index, SYMTAB_VALUE_FIELD);
 }
 
 // Returns the index of the register we are using. Index maps to register_names
@@ -2092,6 +2092,8 @@ int loadFromMemory(int offset) {
 
 	sprintf(temp, "(%s)", register_names[reg1]);
 	emit("movl", temp, register_names[reg2]); // store the memory location of rbx in eax
+
+	freeRegister(reg1);
 
 	return reg2; // reg2 now holds the location of the variable we want
 }
@@ -2160,10 +2162,10 @@ static void finalize() {
 }
 
 int getValue(int index) {
-  return (int)SymGetFieldByIndex(table, index, SYMTAB_VALUE_FIELD); 
+  return (int)SymGetFieldByIndex(table, index, SYMTAB_VALUE_FIELD);
 }
 
-int setValue(int index, int value) {
+void setValue(int index, int value) {
   SymPutFieldByIndex(table, index, SYMTAB_VALUE_FIELD, (Generic)value); 
 }
 
