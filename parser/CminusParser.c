@@ -203,6 +203,11 @@ int str_const_count;
 char statements[99999]; // TODO: FIX
 char printfs[9999]; // List of printf options
 
+// Register management
+int REGISTER_COUNT = 13;
+char *register_names[13] = { "%eax", "%ebx", "%ecx", "%edx", "%esi", "%edi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
+int register_taken[13]; // 1 for true
+
 
 
 /* Enabling traces.  */
@@ -236,7 +241,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 240 "CminusParser.c"
+#line 245 "CminusParser.c"
 
 #ifdef short
 # undef short
@@ -548,13 +553,13 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   111,   111,   112,   116,   117,   121,   125,   126,   130,
-     134,   139,   140,   146,   147,   151,   159,   163,   167,   168,
-     169,   170,   171,   172,   173,   179,   195,   196,   201,   205,
-     210,   214,   218,   224,   232,   242,   260,   265,   269,   273,
-     274,   279,   282,   285,   288,   295,   298,   301,   304,   307,
-     310,   313,   320,   323,   326,   333,   336,   339,   347,   358,
-     361,   364,   371,   390,   397,   404
+       0,   116,   116,   117,   121,   122,   126,   130,   131,   135,
+     139,   144,   145,   151,   152,   156,   164,   168,   172,   173,
+     174,   175,   176,   177,   178,   184,   200,   201,   206,   210,
+     215,   219,   223,   238,   255,   286,   304,   309,   313,   317,
+     318,   323,   326,   329,   332,   339,   342,   345,   348,   351,
+     354,   357,   364,   367,   370,   377,   380,   383,   391,   402,
+     405,   408,   415,   422,   429,   436
 };
 #endif
 
@@ -1546,7 +1551,7 @@ yyreduce:
   switch (yyn)
     {
         case 15:
-#line 151 "CminusParser.y"
+#line 156 "CminusParser.y"
     {
 		// save in the symbol table the:
 		// name
@@ -1558,7 +1563,7 @@ yyreduce:
     break;
 
   case 25:
-#line 179 "CminusParser.y"
+#line 184 "CminusParser.y"
     {
 		// setValue($1, $3);
 		buffer("movq $_gp,%rbx\n");
@@ -1575,7 +1580,7 @@ yyreduce:
     break;
 
   case 33:
-#line 224 "CminusParser.y"
+#line 238 "CminusParser.y"
     {
 		buffer("movq $_gp,%rbx\n");
     buffer("addq $4, %rbx\n");
@@ -1587,21 +1592,42 @@ yyreduce:
     break;
 
   case 34:
-#line 232 "CminusParser.y"
+#line 255 "CminusParser.y"
     {
-		char temp[80];
-		sprintf(temp, "movl $%d, %%ebx\n", (yyvsp[(3) - (5)]));
-		buffer(temp);
+		int reg1 = allocateRegister();
+		int reg2 = allocateRegister();
+		int reg3 = allocateRegister();
+		int reg4 = allocateRegister();
 
-    buffer("movl %ebx, %esi\n");
-    buffer("movl $0, %eax\n");
-    buffer("movl $.int_wformat, %edi\n");
-    buffer("call printf\n");
+		char temp[80];
+
+		// possible issues with this: is %edi and %esi reserved? where does printf look for printing variables
+		emit("movl", register_names[(yyvsp[(3) - (5)])], register_names[reg1]); // first reg may need () around it
+		emit("movl", register_names[reg1], register_names[reg2]); // move result into reg2
+		emit("movl", "$0", register_names[reg3]); // set reg3 to be 0
+		emit("movl", "$.int_wformat", register_names[reg4]); // set reg4 to be address of $.int_wformat
+		buffer("call printf"); // call printf
+
+		freeRegister(reg1);
+		freeRegister(reg2);
+		freeRegister(reg3);
+		freeRegister(reg4);
+
+		// sprintf(temp, "$%d", )
+
+
+		// sprintf(temp, "movl %ds, %%ebx\n", register_names[$3]);
+		// buffer(temp);
+
+  //   buffer("movl %ebx, %esi\n");
+  //   buffer("movl $0, %eax\n");
+  //   buffer("movl $.int_wformat, %edi\n");
+  //   buffer("call printf\n");
 	;}
     break;
 
   case 35:
-#line 242 "CminusParser.y"
+#line 286 "CminusParser.y"
     {
 		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table,(yyvsp[(3) - (5)]), SYM_NAME_FIELD)); // TODO: escape stuff out of $3
 		
@@ -1620,126 +1646,126 @@ yyreduce:
     break;
 
   case 41:
-#line 279 "CminusParser.y"
+#line 323 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 42:
-#line 282 "CminusParser.y"
+#line 326 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) || (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 43:
-#line 285 "CminusParser.y"
+#line 329 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) && (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 44:
-#line 288 "CminusParser.y"
+#line 332 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(2) - (2)]) == 0) ? 1 : 0;
 	;}
     break;
 
   case 45:
-#line 295 "CminusParser.y"
+#line 339 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 46:
-#line 298 "CminusParser.y"
+#line 342 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 47:
-#line 301 "CminusParser.y"
+#line 345 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 0 : 1;
 	;}
     break;
 
   case 48:
-#line 304 "CminusParser.y"
+#line 348 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) <= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 49:
-#line 307 "CminusParser.y"
+#line 351 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) < (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 50:
-#line 310 "CminusParser.y"
+#line 354 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) >= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 51:
-#line 313 "CminusParser.y"
+#line 357 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) > (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 52:
-#line 320 "CminusParser.y"
+#line 364 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 53:
-#line 323 "CminusParser.y"
+#line 367 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 54:
-#line 326 "CminusParser.y"
+#line 370 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 55:
-#line 333 "CminusParser.y"
+#line 377 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 56:
-#line 336 "CminusParser.y"
+#line 380 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 57:
-#line 339 "CminusParser.y"
+#line 383 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) / (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 58:
-#line 347 "CminusParser.y"
+#line 391 "CminusParser.y"
     {
 		getValue((yyvsp[(1) - (1)]));
 		buffer("movq $_gp,%rbx\n");
@@ -1754,65 +1780,53 @@ yyreduce:
     break;
 
   case 59:
-#line 358 "CminusParser.y"
+#line 402 "CminusParser.y"
     { 
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 60:
-#line 361 "CminusParser.y"
+#line 405 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]);
 	;}
     break;
 
   case 61:
-#line 364 "CminusParser.y"
+#line 408 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(2) - (3)]);
 	;}
     break;
 
   case 62:
-#line 371 "CminusParser.y"
+#line 415 "CminusParser.y"
     {
-		int offset = (int)SymGetField(table, (yyvsp[(1) - (1)]), 'int')
+		int offset = getOffset((yyvsp[(1) - (1)]));
 
-		// Reg resultReg = allocateReg();
-		// allocateAddress(offset, storageType);
+		int reg = loadFromMemory(offset);
 
-		buffer("movq $_gp, %rbx\n");
-
-		char temp[80];
-		sprintf(temp, "addq $%d, %rbx\n", offset);
-		buffer(temp);
-		
-		buffer("movl (%rbx), %eax\n");
-
-		// emitLoad(addReg, resultReg);
-		// free(addReg);
-
-		(yyval) = resultReg;
+		(yyval) = reg;
 	;}
     break;
 
   case 63:
-#line 390 "CminusParser.y"
+#line 422 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (4)]);
 	;}
     break;
 
   case 64:
-#line 397 "CminusParser.y"
+#line 429 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 65:
-#line 404 "CminusParser.y"
+#line 436 "CminusParser.y"
     { 
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
@@ -1820,7 +1834,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1824 "CminusParser.c"
+#line 1838 "CminusParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2034,14 +2048,62 @@ yyreturn:
 }
 
 
-#line 409 "CminusParser.y"
+#line 441 "CminusParser.y"
 
 
 
 /********************C ROUTINES *********************************/
 
 int getOffset(char *name) {
+	(int)SymGetField(table, name, 'int');
+}
 
+// Returns the index of the register we are using. Index maps to register_names
+int allocateRegister() {
+	int i = 0;
+	for(i = 0; i < REGISTER_COUNT; ++i) {
+		if(register_taken[i] == 0) {
+			register_taken[i] = 1;
+			return i;
+		}
+	}
+
+	Cminus_error("No registers remaining for allocation.");
+	return -1;
+}
+
+// loads variable from memory at the given offset into a register
+//
+// Example:
+// movq $_gp,%rbx
+// addq $4, %rbx
+// movl (%rbx), %eax
+int loadFromMemory(int offset) {
+	int reg1 = allocateRegister();
+	int reg2 = allocateRegister();
+
+	char temp[80];
+	sprintf(temp, "$%d", offset);
+
+	emit("movq", "$_gp", register_names[reg1]); // set %rbx reg to equal _gp
+
+	sprintf(temp, "$%d", offset);
+	emit("addq", temp, register_names[reg1]); // add offset to %rbx to move to correct memory location for variable
+
+	sprintf(temp, "(%s)", register_names[reg1]);
+	emit("movl", temp, register_names[reg2]); // store the memory location of rbx in eax
+
+	return reg2; // reg2 now holds the location of the variable we want
+}
+
+void freeRegister(int index) {
+	register_taken[index] = 0;
+}
+
+void emit(char *instruction, char *one, char *two) {
+	char temp[80];
+	sprintf(temp, "%s %s, %s\n", instruction, one, two);
+	buffer(temp);
 }
 
 // Prints out an error with file/line/cursor position.

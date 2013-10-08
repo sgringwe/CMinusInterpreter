@@ -57,6 +57,11 @@ int str_const_count;
 char statements[99999]; // TODO: FIX
 char printfs[9999]; // List of printf options
 
+// Register management
+int REGISTER_COUNT = 13;
+char *register_names[13] = { "%eax", "%ebx", "%ecx", "%edx", "%esi", "%edi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
+int register_taken[13]; // 1 for true
+
 %}
 
 %name-prefix="Cminus_"
@@ -221,6 +226,15 @@ WhileToken :
 // This is where content is printed. It will either be an integer (first 2 cases) or
 // a string constant
 IOStatement : 
+	// Example code:
+	// movq $_gp,%rbx
+  // addq $4, %rbx
+  // movl $.int_rformat, %edi
+  // movl %ebx, %esi
+  // movl $0, %eax
+  // call scanf
+	//
+	// $3 represents register id holding memory address of variable to print
 	READ LPAREN Variable RPAREN SEMICOLON {
 		buffer("movq $_gp,%rbx\n");
     buffer("addq $4, %rbx\n");
@@ -229,15 +243,45 @@ IOStatement :
     buffer("movl $0, %eax\n");
     buffer("call scanf\n");
 	}
-	| WRITE LPAREN Expr RPAREN SEMICOLON {
-		char temp[80];
-		sprintf(temp, "movl $%d, %%ebx\n", $3);
-		buffer(temp);
 
-    buffer("movl %ebx, %esi\n");
-    buffer("movl $0, %eax\n");
-    buffer("movl $.int_wformat, %edi\n");
-    buffer("call printf\n");
+	// Example code:
+	// movl $7, %ebx
+	// movl %ebx, %esi
+	// movl $0, %eax
+	// movl $.int_wformat, %edi
+	// call printf
+	//
+	// $3 represents register id holding the memory address of variable to print
+	| WRITE LPAREN Expr RPAREN SEMICOLON {
+		int reg1 = allocateRegister();
+		int reg2 = allocateRegister();
+		int reg3 = allocateRegister();
+		int reg4 = allocateRegister();
+
+		char temp[80];
+
+		// possible issues with this: is %edi and %esi reserved? where does printf look for printing variables
+		emit("movl", register_names[$3], register_names[reg1]); // first reg may need () around it
+		emit("movl", register_names[reg1], register_names[reg2]); // move result into reg2
+		emit("movl", "$0", register_names[reg3]); // set reg3 to be 0
+		emit("movl", "$.int_wformat", register_names[reg4]); // set reg4 to be address of $.int_wformat
+		buffer("call printf"); // call printf
+
+		freeRegister(reg1);
+		freeRegister(reg2);
+		freeRegister(reg3);
+		freeRegister(reg4);
+
+		// sprintf(temp, "$%d", )
+
+
+		// sprintf(temp, "movl %ds, %%ebx\n", register_names[$3]);
+		// buffer(temp);
+
+  //   buffer("movl %ebx, %esi\n");
+  //   buffer("movl $0, %eax\n");
+  //   buffer("movl $.int_wformat, %edi\n");
+  //   buffer("call printf\n");
 	}
 	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
 		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table,$3, SYM_NAME_FIELD)); // TODO: escape stuff out of $3
@@ -369,30 +413,18 @@ Factor :
 // Either a variable or function.
 Variable : 
 	IDENTIFIER {
-		int offset = (int)SymGetField(table, $1, 'int')
+		int offset = getOffset($1);
 
-		// Reg resultReg = allocateReg();
-		// allocateAddress(offset, storageType);
+		int reg = loadFromMemory(offset);
 
-		buffer("movq $_gp, %rbx\n");
-
-		char temp[80];
-		sprintf(temp, "addq $%d, %rbx\n", offset);
-		buffer(temp);
-		
-		buffer("movl (%rbx), %eax\n");
-
-		// emitLoad(addReg, resultReg);
-		// free(addReg);
-
-		$$ = resultReg;
+		$$ = reg;
 	}
 	| IDENTIFIER LBRACKET Expr RBRACKET {
 		$$ = $1;
 	}
 ;
 
-// String constants include the ''s when passed from flex. Remove those and then return the string.
+// Just pass the string. We will buffer the printf for the header and buffer the actual printf
 StringConstant : 
 	STRING {
 		$$ = $1;
@@ -412,7 +444,55 @@ Constant :
 /********************C ROUTINES *********************************/
 
 int getOffset(char *name) {
+	(int)SymGetField(table, name, 'int');
+}
 
+// Returns the index of the register we are using. Index maps to register_names
+int allocateRegister() {
+	int i = 0;
+	for(i = 0; i < REGISTER_COUNT; ++i) {
+		if(register_taken[i] == 0) {
+			register_taken[i] = 1;
+			return i;
+		}
+	}
+
+	Cminus_error("No registers remaining for allocation.");
+	return -1;
+}
+
+// loads variable from memory at the given offset into a register
+//
+// Example:
+// movq $_gp,%rbx
+// addq $4, %rbx
+// movl (%rbx), %eax
+int loadFromMemory(int offset) {
+	int reg1 = allocateRegister();
+	int reg2 = allocateRegister();
+
+	char temp[80];
+	sprintf(temp, "$%d", offset);
+
+	emit("movq", "$_gp", register_names[reg1]); // set %rbx reg to equal _gp
+
+	sprintf(temp, "$%d", offset);
+	emit("addq", temp, register_names[reg1]); // add offset to %rbx to move to correct memory location for variable
+
+	sprintf(temp, "(%s)", register_names[reg1]);
+	emit("movl", temp, register_names[reg2]); // store the memory location of rbx in eax
+
+	return reg2; // reg2 now holds the location of the variable we want
+}
+
+void freeRegister(int index) {
+	register_taken[index] = 0;
+}
+
+void emit(char *instruction, char *one, char *two) {
+	char temp[80];
+	sprintf(temp, "%s %s, %s\n", instruction, one, two);
+	buffer(temp);
 }
 
 // Prints out an error with file/line/cursor position.

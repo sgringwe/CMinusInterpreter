@@ -546,7 +546,7 @@ char *Cminus_text;
 #include <util/dlink.h>
 #include "CminusParser.h"
 
-extern SymTable symtab;
+extern SymTable table;
 #line 551 "CminusScanner.c"
 
 #define INITIAL 0
@@ -979,44 +979,45 @@ case 31:
 /* rule 31 can match eol */
 YY_RULE_SETUP
 #line 77 "CminusScanner.l"
-{ Cminus_lval = SymIndex(symtab, substr(Cminus_text, 1, Cminus_leng-2));
-                                  return STRING; }
+{ 
+                  Cminus_lval = SymIndex(table, substr(Cminus_text, 1, Cminus_leng-2));
+                  return STRING; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 79 "CminusScanner.l"
-{ Cminus_lval = SymIndex(symtab, ssave(Cminus_text)); 
+#line 80 "CminusScanner.l"
+{ Cminus_lval = SymIndex(table, ssave(Cminus_text)); 
                                   return IDENTIFIER; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 81 "CminusScanner.l"
+#line 82 "CminusScanner.l"
 { Cminus_lval = atoi(Cminus_text); return INTCON; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 82 "CminusScanner.l"
+#line 83 "CminusScanner.l"
 { ; }
 	YY_BREAK
 case 35:
 /* rule 35 can match eol */
 YY_RULE_SETUP
-#line 83 "CminusScanner.l"
+#line 84 "CminusScanner.l"
 { Cminus_lineno++;}
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 84 "CminusScanner.l"
+#line 85 "CminusScanner.l"
 {
           fprintf(stderr, "Scanner: lexical error '%s'.\n", Cminus_text); 
         }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 87 "CminusScanner.l"
+#line 88 "CminusScanner.l"
 ECHO;
 	YY_BREAK
-#line 1020 "CminusScanner.c"
+#line 1021 "CminusScanner.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2013,7 +2014,7 @@ void Cminus_free (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 87 "CminusScanner.l"
+#line 88 "CminusScanner.l"
 
 
 
