@@ -27,13 +27,20 @@ for fn in os.listdir(input_dir):
       assembly_name = file_name.replace('.cm', '.s')
       executable_name = file_name.replace('.cm', '')
       output_name = file_name.replace('.cm', '.output')
+
+      print 'Compiling cminus file into assembly...'
       call(["./cmc", file_name])
+
       try:
+        print 'Compiling assembly file into executable...'
         call(["gcc", "-o", executable_name, assembly_name])
       except:
         print "gcc call failed"
 
       try:
+        print 'Executing executable to output...'
+        puts executable_name
+        puts output_name
         call(["./" + executable_name, ">", output_name])
       except:
         print "Execution of output failed"
