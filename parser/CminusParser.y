@@ -59,7 +59,7 @@ char printfs[9999]; // List of printf options
 
 // Register management
 int REGISTER_COUNT = 13;
-char *register_names[13] = { "%eax", "%ebx", "%ecx", "%edx", "%esi", "%edi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
+char *register_names[13] = { "%rax", "%rbx", "%rcx", "%rdx", "%rsi", "%rdi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
 int register_taken[13]; // 1 for true
 
 %}
