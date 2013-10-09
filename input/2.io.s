@@ -2,7 +2,7 @@
 .int_wformat: .string "%d\n"
 .str_wformat: .string "%s\n"
 .int_rformat: .string "%d"
-.string_const0:	.string	"input an integer:"
+.string_const0:	.string	"a"
 	.comm _gp, 4, 4
 	.text
 	.globl main
@@ -10,37 +10,35 @@
 main:   nop
 	pushq %rbp
 	movq %rsp, %rbp
+	movq $_gp, %rbx
+	addq $-1, %rbx
+	movl (%rbx), %eax
 	movl $.string_const0, %ebx
 	movl %ebx, %esi
 	movl $0, %eax
 	movl $.str_wformat, %edi
 	call printf
-	movq $_gp, %eax
-	addq $0, %eax
-	movl (%eax), %ebx
-	movq $_gp,%rbx
-	addq $4, %rbx
-	movl $.int_rformat, %edi
-	movl %ebx, %esi
-	movl $0, %eax
-	call scanf
-	movq $_gp, %eax
-	addq $0, %eax
-	movl (%eax), %ecx
-	movl %ecx, %eax
-	movl %eax, %edx
-	movl $0, %esi
-	movl $.int_wformat, %edi
-	call printf
-	movl %ebx, %eax
-	movl %eax, %ecx
-	movl $0, %edx
-	movl $.int_wformat, %esi
-	call printf
-	movl %edx, %eax
-	movl %eax, %ebx
-	movl $0, %ecx
-	movl $.int_wformat, %edx
-	call printf
+	movq $_gp, %rbx
+	addq $0, %rbx
+	movl (%rbx), %ecx
+	movq $_gp, %rbx
+	addq $0, %rbx
+	movl (%rbx), %edx
+	movq $_gp, %rbx
+	addq $-1, %rbx
+	movl (%rbx), %esi
+	movq $_gp, %rbx
+	addq $-1, %rbx
+	movl (%rbx), %edi
+	movq $_gp, %rbx
+	addq $-1, %rbx
+	movl (%rbx), %r8d
+	movq $_gp, %rbx
+	movq $-1, %rbx
+	movl (%rbx), %edi
+	movq $_gp, %rbx
+	movq $-1, %rbx
+	movl (%rbx), %r8d
+	addl %edi, %r8d
 	leave
 	ret

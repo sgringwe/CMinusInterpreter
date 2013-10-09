@@ -555,11 +555,11 @@ static const yytype_uint16 yyrline[] =
 {
        0,   116,   116,   117,   121,   122,   126,   130,   131,   135,
      139,   144,   145,   151,   152,   156,   160,   164,   168,   169,
-     170,   171,   172,   173,   174,   184,   203,   204,   209,   213,
-     218,   222,   226,   241,   252,   255,   273,   278,   282,   286,
-     287,   292,   295,   298,   301,   308,   311,   314,   317,   320,
-     323,   326,   333,   343,   364,   371,   374,   377,   385,   388,
-     391,   394,   401,   408,   415,   422
+     170,   171,   172,   173,   174,   184,   205,   206,   211,   215,
+     220,   224,   228,   243,   254,   257,   275,   280,   284,   288,
+     289,   294,   297,   300,   303,   310,   313,   316,   319,   322,
+     325,   328,   335,   345,   366,   373,   376,   379,   387,   390,
+     393,   396,   403,   410,   417,   428
 };
 #endif
 
@@ -1575,24 +1575,26 @@ yyreduce:
 		emit("movl", temp, register_names[reg]);
 
 		emit("movl", register_names[reg], "(%rbx)");
+
+		freeRegister(reg);
 	;}
     break;
 
   case 33:
-#line 241 "CminusParser.y"
+#line 243 "CminusParser.y"
     {
 	;}
     break;
 
   case 34:
-#line 252 "CminusParser.y"
+#line 254 "CminusParser.y"
     {
 		
 	;}
     break;
 
   case 35:
-#line 255 "CminusParser.y"
+#line 257 "CminusParser.y"
     {
 		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table, (yyvsp[(3) - (5)]), SYM_NAME_FIELD)); // TODO: escape stuff out of $3
 		
@@ -1611,91 +1613,91 @@ yyreduce:
     break;
 
   case 41:
-#line 292 "CminusParser.y"
+#line 294 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 42:
-#line 295 "CminusParser.y"
+#line 297 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) || (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 43:
-#line 298 "CminusParser.y"
+#line 300 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) && (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 44:
-#line 301 "CminusParser.y"
+#line 303 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(2) - (2)]) == 0) ? 1 : 0;
 	;}
     break;
 
   case 45:
-#line 308 "CminusParser.y"
+#line 310 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 46:
-#line 311 "CminusParser.y"
+#line 313 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 47:
-#line 314 "CminusParser.y"
+#line 316 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 0 : 1;
 	;}
     break;
 
   case 48:
-#line 317 "CminusParser.y"
+#line 319 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) <= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 49:
-#line 320 "CminusParser.y"
+#line 322 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) < (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 50:
-#line 323 "CminusParser.y"
+#line 325 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) >= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 51:
-#line 326 "CminusParser.y"
+#line 328 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) > (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 52:
-#line 333 "CminusParser.y"
+#line 335 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 53:
-#line 343 "CminusParser.y"
+#line 345 "CminusParser.y"
     {
 		// $$ = $1 + $3;
 		int offset1 = getOffset((yyvsp[(1) - (3)]));
@@ -1720,63 +1722,63 @@ yyreduce:
     break;
 
   case 54:
-#line 364 "CminusParser.y"
+#line 366 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 55:
-#line 371 "CminusParser.y"
+#line 373 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 56:
-#line 374 "CminusParser.y"
+#line 376 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 57:
-#line 377 "CminusParser.y"
+#line 379 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) / (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 58:
-#line 385 "CminusParser.y"
+#line 387 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 59:
-#line 388 "CminusParser.y"
+#line 390 "CminusParser.y"
     { 
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 60:
-#line 391 "CminusParser.y"
+#line 393 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]);
 	;}
     break;
 
   case 61:
-#line 394 "CminusParser.y"
+#line 396 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(2) - (3)]);
 	;}
     break;
 
   case 62:
-#line 401 "CminusParser.y"
+#line 403 "CminusParser.y"
     {
 		int offset = getOffset((yyvsp[(1) - (1)]));
 
@@ -1787,29 +1789,37 @@ yyreduce:
     break;
 
   case 63:
-#line 408 "CminusParser.y"
+#line 410 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (4)]);
 	;}
     break;
 
   case 64:
-#line 415 "CminusParser.y"
+#line 417 "CminusParser.y"
     {
-		(yyval) = (yyvsp[(1) - (1)]);
+		int offset = getOffset((yyvsp[(1) - (1)]));
+
+		int reg = loadFromMemory(offset);
+
+		(yyval) = reg;
 	;}
     break;
 
   case 65:
-#line 422 "CminusParser.y"
+#line 428 "CminusParser.y"
     { 
-		(yyval) = (yyvsp[(1) - (1)]);
+		int offset = getOffset((yyvsp[(1) - (1)]));
+
+		int reg = loadFromMemory(offset);
+
+		(yyval) = reg;
 	;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1813 "CminusParser.c"
+#line 1823 "CminusParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2023,7 +2033,7 @@ yyreturn:
 }
 
 
-#line 427 "CminusParser.y"
+#line 437 "CminusParser.y"
 
 
 

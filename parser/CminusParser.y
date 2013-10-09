@@ -196,6 +196,8 @@ Assignment :
 		emit("movl", temp, register_names[reg]);
 
 		emit("movl", register_names[reg], "(%rbx)");
+
+		freeRegister(reg);
 	}
 ;
 				
@@ -413,14 +415,22 @@ Variable :
 // Just pass the string. We will buffer the printf for the header and buffer the actual printf
 StringConstant : 
 	STRING {
-		$$ = $1;
+		int offset = getOffset($1);
+
+		int reg = loadFromMemory(offset);
+
+		$$ = reg;
 	}
 ;
 
 // Simply return the integer for now (only variable type)
 Constant : 
 	INTCON { 
-		$$ = $1;
+		int offset = getOffset($1);
+
+		int reg = loadFromMemory(offset);
+
+		$$ = reg;
 	}
 ;
 

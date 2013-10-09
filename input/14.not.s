@@ -9,51 +9,37 @@
 main:   nop
 	pushq %rbp
 	movq %rsp, %rbp
-	movq $_gp, %eax
-	addq $0, %eax
-	movl (%eax), %ebx
-	movq $_gp,%rbx
+	movq $_gp, %rbx
 	addq $0, %rbx
-	movl $1, %ecx
-	movl %ecx, (%rbx)
-	movq $_gp, %eax
-	addq $4, %eax
-	movl (%eax), %ecx
-	movq $_gp,%rbx
+	movl (%rbx), %eax
+	movq $_gp, %rbx
+	addq $4, %rbx
+	movl (%rbx), %ecx
+	movq $_gp, %rbx
 	addq $0, %rbx
-	movl $0, %ecx
-	movl %ecx, (%rbx)
-	movq $_gp, %eax
-	addq $0, %eax
-	movl (%eax), %edx
-	movl %edx, %eax
-	movl %eax, %esi
-	movl $0, %edi
-	movl $.int_wformat, %r8d
-	call printf
-	movq $_gp, %eax
-	addq $4, %eax
-	movl (%eax), %edx
-	movl %eax, %eax
-	movl %eax, %esi
-	movl $0, %edi
-	movl $.int_wformat, %r8d
-	call printf
-	movq $_gp, %eax
-	addq $4, %eax
-	movl (%eax), %esi
-	movl %esi, %eax
-	movl %eax, %edi
-	movl $0, %r8d
-	movl $.int_wformat, %r9d
-	call printf
-	movq $_gp, %eax
-	addq $0, %eax
-	movl (%eax), %esi
-	movl %eax, %eax
-	movl %eax, %edi
-	movl $0, %r8d
-	movl $.int_wformat, %r9d
-	call printf
+	movl $4, %edx
+	movl %edx, (%rbx)
+	movq $_gp, %rbx
+	addq $4, %rbx
+	movl (%rbx), %edx
+	movq $_gp, %rbx
+	addq $0, %rbx
+	movl (%rbx), %esi
+	movq $_gp, %rbx
+	addq $-1, %rbx
+	movl $-1, %edi
+	movl %edi, (%rbx)
+	movq $_gp, %rbx
+	addq $0, %rbx
+	movl (%rbx), %edi
+	movq $_gp, %rbx
+	addq $4, %rbx
+	movl (%rbx), %r8d
+	movq $_gp, %rbx
+	addq $4, %rbx
+	movl (%rbx), %r9d
+	movq $_gp, %rbx
+	addq $0, %rbx
+	movl (%rbx), %r10d
 	leave
 	ret
