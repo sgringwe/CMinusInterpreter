@@ -554,12 +554,12 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,   116,   116,   117,   121,   122,   126,   130,   131,   135,
-     139,   144,   145,   151,   152,   156,   164,   168,   172,   173,
-     174,   175,   176,   177,   178,   184,   200,   201,   206,   210,
-     215,   219,   223,   238,   255,   287,   305,   310,   314,   318,
-     319,   324,   327,   330,   333,   340,   343,   346,   349,   352,
-     355,   358,   365,   368,   371,   378,   381,   384,   392,   395,
-     398,   401,   408,   415,   422,   429
+     139,   144,   145,   151,   152,   156,   160,   164,   168,   169,
+     170,   171,   172,   173,   174,   184,   203,   204,   209,   213,
+     218,   222,   226,   241,   252,   255,   273,   278,   282,   286,
+     287,   292,   295,   298,   301,   308,   311,   314,   317,   320,
+     323,   326,   333,   343,   364,   371,   374,   377,   385,   388,
+     391,   394,   401,   408,   415,   422
 };
 #endif
 
@@ -1553,10 +1553,6 @@ yyreduce:
         case 15:
 #line 156 "CminusParser.y"
     {
-		// save in the symbol table the:
-		// name
-		// type (always int for now)
-		// offset
 		setValue((yyvsp[(1) - (1)]), var_count * 4);
 		++var_count;
 	;}
@@ -1565,70 +1561,38 @@ yyreduce:
   case 25:
 #line 184 "CminusParser.y"
     {
-		// setValue($1, $3);
-		buffer("movq $_gp,%rbx\n");
-    buffer("addq $0, %rbx\n");
+		int offset = getOffset((yyvsp[(1) - (4)]));
+		int valOffset = getOffset((yyvsp[(3) - (4)]));
+		int reg = allocateRegister();
 
-    // printf("movl $5, %ecx\n");
+		char temp[80];
+		emit("movq", "$_gp", "%rbx");
 
-    char temp[80];
-		sprintf(temp, "movl $%d, %%ecx\n", (yyvsp[(3) - (4)]));
-		buffer(temp);
+		sprintf(temp, "$%d", offset);
+		emit("addq", temp, "%rbx");
 
-    buffer("movl %ecx, (%rbx)\n");
+		sprintf(temp, "$%d", valOffset);
+		emit("movl", temp, register_names[reg]);
+
+		emit("movl", register_names[reg], "(%rbx)");
 	;}
     break;
 
   case 33:
-#line 238 "CminusParser.y"
+#line 241 "CminusParser.y"
     {
-		buffer("movq $_gp,%rbx\n");
-    buffer("addq $4, %rbx\n");
-    buffer("movl $.int_rformat, %edi\n");
-    buffer("movl %ebx, %esi\n");
-    buffer("movl $0, %eax\n");
-    buffer("call scanf\n");
 	;}
     break;
 
   case 34:
-#line 255 "CminusParser.y"
+#line 252 "CminusParser.y"
     {
-		int reg1 = allocateRegister();
-		int reg2 = allocateRegister();
-		int reg3 = allocateRegister();
-		int reg4 = allocateRegister();
-
-		char temp[80];
-
-		// possible issues with this: is %edi and %esi reserved? where does printf look for printing variables
-		emit("movl", register_names[(yyvsp[(3) - (5)])], register_names[reg1]); // first reg may need () around it
-		emit("movl", register_names[reg1], register_names[reg2]); // move result into reg2
-		emit("movl", "$0", register_names[reg3]); // set reg3 to be 0
-		emit("movl", "$.int_wformat", register_names[reg4]); // set reg4 to be address of $.int_wformat
-		buffer("call printf\n"); // call printf
-
-		freeRegister(reg1);
-		freeRegister(reg2);
-		freeRegister(reg3);
-		freeRegister(reg4);
-		freeRegister((yyvsp[(3) - (5)])); // also free the variable we just printed's register
-
-		// sprintf(temp, "$%d", )
-
-
-		// sprintf(temp, "movl %ds, %%ebx\n", register_names[$3]);
-		// buffer(temp);
-
-  //   buffer("movl %ebx, %esi\n");
-  //   buffer("movl $0, %eax\n");
-  //   buffer("movl $.int_wformat, %edi\n");
-  //   buffer("call printf\n");
+		
 	;}
     break;
 
   case 35:
-#line 287 "CminusParser.y"
+#line 255 "CminusParser.y"
     {
 		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table, (yyvsp[(3) - (5)]), SYM_NAME_FIELD)); // TODO: escape stuff out of $3
 		
@@ -1647,154 +1611,172 @@ yyreduce:
     break;
 
   case 41:
-#line 324 "CminusParser.y"
+#line 292 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 42:
-#line 327 "CminusParser.y"
+#line 295 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) || (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 43:
-#line 330 "CminusParser.y"
+#line 298 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) && (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 44:
-#line 333 "CminusParser.y"
+#line 301 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(2) - (2)]) == 0) ? 1 : 0;
 	;}
     break;
 
   case 45:
-#line 340 "CminusParser.y"
+#line 308 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 46:
-#line 343 "CminusParser.y"
+#line 311 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 47:
-#line 346 "CminusParser.y"
+#line 314 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) == (yyvsp[(3) - (3)])) ? 0 : 1;
 	;}
     break;
 
   case 48:
-#line 349 "CminusParser.y"
+#line 317 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) <= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 49:
-#line 352 "CminusParser.y"
+#line 320 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) < (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 50:
-#line 355 "CminusParser.y"
+#line 323 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) >= (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 51:
-#line 358 "CminusParser.y"
+#line 326 "CminusParser.y"
     {
 		(yyval) = ((yyvsp[(1) - (3)]) > (yyvsp[(3) - (3)])) ? 1 : 0;
 	;}
     break;
 
   case 52:
-#line 365 "CminusParser.y"
+#line 333 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 53:
-#line 368 "CminusParser.y"
+#line 343 "CminusParser.y"
     {
-		(yyval) = (yyvsp[(1) - (3)]) + (yyvsp[(3) - (3)]);
+		// $$ = $1 + $3;
+		int offset1 = getOffset((yyvsp[(1) - (3)]));
+		int offset2 = getOffset((yyvsp[(3) - (3)]));
+
+		char temp[80];
+
+		// Load up first register
+		emit("movq", "$_gp", "%rbx");
+		sprintf(temp, "$%d", offset1);
+		emit("movq", temp, "%rbx");
+		emit("movl", "(%rbx)", register_names[(yyvsp[(1) - (3)])]);
+
+		// Load up first register
+		emit("movq", "$_gp", "%rbx");
+		sprintf(temp, "$%d", offset1);
+		emit("movq", temp, "%rbx");
+		emit("movl", "(%rbx)", register_names[(yyvsp[(3) - (3)])]);
+
+		emit("addl", register_names[(yyvsp[(1) - (3)])], register_names[(yyvsp[(3) - (3)])]);
 	;}
     break;
 
   case 54:
-#line 371 "CminusParser.y"
+#line 364 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) - (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 55:
-#line 378 "CminusParser.y"
+#line 371 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 56:
-#line 381 "CminusParser.y"
+#line 374 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) * (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 57:
-#line 384 "CminusParser.y"
+#line 377 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]) / (yyvsp[(3) - (3)]);
 	;}
     break;
 
   case 58:
-#line 392 "CminusParser.y"
+#line 385 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 59:
-#line 395 "CminusParser.y"
+#line 388 "CminusParser.y"
     { 
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 60:
-#line 398 "CminusParser.y"
+#line 391 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (3)]);
 	;}
     break;
 
   case 61:
-#line 401 "CminusParser.y"
+#line 394 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(2) - (3)]);
 	;}
     break;
 
   case 62:
-#line 408 "CminusParser.y"
+#line 401 "CminusParser.y"
     {
 		int offset = getOffset((yyvsp[(1) - (1)]));
 
@@ -1805,21 +1787,21 @@ yyreduce:
     break;
 
   case 63:
-#line 415 "CminusParser.y"
+#line 408 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (4)]);
 	;}
     break;
 
   case 64:
-#line 422 "CminusParser.y"
+#line 415 "CminusParser.y"
     {
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
     break;
 
   case 65:
-#line 429 "CminusParser.y"
+#line 422 "CminusParser.y"
     { 
 		(yyval) = (yyvsp[(1) - (1)]);
 	;}
@@ -1827,7 +1809,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 1831 "CminusParser.c"
+#line 1813 "CminusParser.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2041,7 +2023,7 @@ yyreturn:
 }
 
 
-#line 434 "CminusParser.y"
+#line 427 "CminusParser.y"
 
 
 

@@ -154,10 +154,6 @@ IdentifierList :
 
 VarDecl : 
 	IDENTIFIER {
-		// save in the symbol table the:
-		// name
-		// type (always int for now)
-		// offset
 		setValue($1, var_count * 4);
 		++var_count;
 	}
@@ -180,19 +176,26 @@ Statement :
 
 // When an assignment is done, update the symbol table field.
 // First check if the field exists and reprot an error if it doesn't
+// movq $_gp,%rbx
+// addq $0, %rbx
+// movl $5, %ecx
+// movl %ecx, (%rbx)
 Assignment : 
 	Variable ASSIGN Expr SEMICOLON {
-		// setValue($1, $3);
-		buffer("movq $_gp,%rbx\n");
-    buffer("addq $0, %rbx\n");
+		int offset = getOffset($1);
+		int valOffset = getOffset($3);
+		int reg = allocateRegister();
 
-    // printf("movl $5, %ecx\n");
+		char temp[80];
+		emit("movq", "$_gp", "%rbx");
 
-    char temp[80];
-		sprintf(temp, "movl $%d, %%ecx\n", $3);
-		buffer(temp);
+		sprintf(temp, "$%d", offset);
+		emit("addq", temp, "%rbx");
 
-    buffer("movl %ecx, (%rbx)\n");
+		sprintf(temp, "$%d", valOffset);
+		emit("movl", temp, register_names[reg]);
+
+		emit("movl", register_names[reg], "(%rbx)");
 	}
 ;
 				
@@ -236,12 +239,6 @@ IOStatement :
 	//
 	// $3 represents register id holding memory address of variable to print
 	READ LPAREN Variable RPAREN SEMICOLON {
-		buffer("movq $_gp,%rbx\n");
-    buffer("addq $4, %rbx\n");
-    buffer("movl $.int_rformat, %edi\n");
-    buffer("movl %ebx, %esi\n");
-    buffer("movl $0, %eax\n");
-    buffer("call scanf\n");
 	}
 
 	// Example code:
@@ -253,36 +250,7 @@ IOStatement :
 	//
 	// $3 represents register id holding the memory address of variable to print
 	| WRITE LPAREN Expr RPAREN SEMICOLON {
-		int reg1 = allocateRegister();
-		int reg2 = allocateRegister();
-		int reg3 = allocateRegister();
-		int reg4 = allocateRegister();
-
-		char temp[80];
-
-		// possible issues with this: is %edi and %esi reserved? where does printf look for printing variables
-		emit("movl", register_names[$3], register_names[reg1]); // first reg may need () around it
-		emit("movl", register_names[reg1], register_names[reg2]); // move result into reg2
-		emit("movl", "$0", register_names[reg3]); // set reg3 to be 0
-		emit("movl", "$.int_wformat", register_names[reg4]); // set reg4 to be address of $.int_wformat
-		buffer("call printf\n"); // call printf
-
-		freeRegister(reg1);
-		freeRegister(reg2);
-		freeRegister(reg3);
-		freeRegister(reg4);
-		freeRegister($3); // also free the variable we just printed's register
-
-		// sprintf(temp, "$%d", )
-
-
-		// sprintf(temp, "movl %ds, %%ebx\n", register_names[$3]);
-		// buffer(temp);
-
-  //   buffer("movl %ebx, %esi\n");
-  //   buffer("movl $0, %eax\n");
-  //   buffer("movl $.int_wformat, %edi\n");
-  //   buffer("call printf\n");
+		
 	}
 	| WRITE LPAREN StringConstant RPAREN SEMICOLON {
 		sprintf(printfs, "%s.string_const%d:	.string	\"%s\"\n", printfs, str_const_count, (char *)SymGetFieldByIndex(table, $3, SYM_NAME_FIELD)); // TODO: escape stuff out of $3
@@ -365,8 +333,33 @@ AddExpr	:
 	MulExpr {
 		$$ = $1;
 	}
+	// movq $_gp,%rbx
+	// addq $0, %rbx
+	// movl (%rbx), %ecx
+	// movq $_gp,%rbx
+	// addq $4, %rbx
+	// movl (%rbx), %edx
+	// addl %edx, %ecx
 	| AddExpr PLUS MulExpr {
-		$$ = $1 + $3;
+		// $$ = $1 + $3;
+		int offset1 = getOffset($1);
+		int offset2 = getOffset($3);
+
+		char temp[80];
+
+		// Load up first register
+		emit("movq", "$_gp", "%rbx");
+		sprintf(temp, "$%d", offset1);
+		emit("movq", temp, "%rbx");
+		emit("movl", "(%rbx)", register_names[$1]);
+
+		// Load up first register
+		emit("movq", "$_gp", "%rbx");
+		sprintf(temp, "$%d", offset1);
+		emit("movq", temp, "%rbx");
+		emit("movl", "(%rbx)", register_names[$3]);
+
+		emit("addl", register_names[$1], register_names[$3]);
 	}
 	| AddExpr MINUS MulExpr {
 		$$ = $1 - $3;
