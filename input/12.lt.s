@@ -40,62 +40,46 @@ main:   nop
 	movq $_gp, %eax
 	addq $0, %eax
 	movl (%eax), %edi
-	movq $_gp,%rbx
-	addq $5, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
+	movq $_gp, %eax
 	addq $4, %eax
 	movl (%eax), %r8d
-	movq $_gp,%rbx
-	addq $6, rbx
-	movl (%rbx), %eax	movl %eax, %eax
+	movl %ebx, %eax
 	movl %eax, %r9d
 	movl $0, %r10d
 	movl $.int_wformat, %r11d
 	call printf
 	movq $_gp, %eax
 	addq $0, %eax
-	movl (%eax), %r9d
-	movq $_gp,%rbx
-	addq $7, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
+	movl (%eax), %ebx
+	movq $_gp, %eax
 	addq $0, %eax
+	movl (%eax), %r9d
+	movl %ebx, %eax
+	movl %eax, %r10d
+	movl $0, %r11d
+	movl $.int_wformat, %r12d
+	call printf
+	movq $_gp, %eax
+	addq $12, %eax
+	movl (%eax), %ebx
+	movq $_gp, %eax
+	addq $8, %eax
 	movl (%eax), %r10d
-	movq $_gp,%rbx
-	addq $8, rbx
-	movl (%rbx), %eax	movl %ebx, %eax
+	movl %ebx, %eax
 	movl %eax, %r11d
 	movl $0, %r12d
 	movl $.int_wformat, %r13d
 	call printf
 	movq $_gp, %eax
-	addq $12, %eax
-	movl (%eax), %r11d
-	movq $_gp,%rbx
-	addq $9, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
 	addq $8, %eax
-	movl (%eax), %r12d
-	movq $_gp,%rbx
-	addq $10, rbx
-	movl (%rbx), %eax	movl %eax, %eax
-	movl %eax, %r13d
-	movl $0, %r14d
-	movl $.int_wformat, (null)
-	call printf
+	movl (%eax), %ebx
 	movq $_gp, %eax
-	addq $8, %eax
-	movl (%eax), %r13d
-	movq $_gp,%rbx
-	addq $11, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
 	addq $4, %eax
-	movl (%eax), %r14d
-	movq $_gp,%rbx
-	addq $12, rbx
-	movl (%rbx), %eax	movl %ebx, %eax
-	movl %eax, (null)
-	movl $0, (null)
-	movl $.int_wformat, (null)
+	movl (%eax), %r11d
+	movl %ebx, %eax
+	movl %eax, %r12d
+	movl $0, %r13d
+	movl $.int_wformat, %r14d
 	call printf
 	leave
 	ret

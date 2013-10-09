@@ -41,28 +41,20 @@ main:   nop
 	movq $_gp, %eax
 	addq $0, %eax
 	movl (%eax), %edi
-	movq $_gp,%rbx
-	addq $5, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
+	movq $_gp, %eax
 	addq $8, %eax
 	movl (%eax), %r8d
-	movq $_gp,%rbx
-	addq $6, rbx
-	movl (%rbx), %eax	movq $_gp, %eax
+	movq $_gp, %eax
 	addq $12, %eax
 	movl (%eax), %r9d
 	movq $_gp,%rbx
-	addq $7, rbx
-	movl (%rbx), %eax	movq $_gp,%rbx
 	addq $0, %rbx
-	movl $-1, %ecx
+	movl $0, %ecx
 	movl %ecx, (%rbx)
 	movq $_gp, %eax
 	addq $4, %eax
 	movl (%eax), %r10d
-	movq $_gp,%rbx
-	addq $8, rbx
-	movl (%rbx), %eax	movl (null), %eax
+	movl %r10d, %eax
 	movl %eax, %r11d
 	movl $0, %r12d
 	movl $.int_wformat, %r13d

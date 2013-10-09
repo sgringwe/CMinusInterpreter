@@ -271,6 +271,7 @@ IOStatement :
 		freeRegister(reg2);
 		freeRegister(reg3);
 		freeRegister(reg4);
+		freeRegister($3); // also free the variable we just printed's register
 
 		// sprintf(temp, "$%d", )
 
@@ -389,15 +390,7 @@ MulExpr :
 // For constants, function calls and parenthesised expressions, return the value 
 Factor : 
 	Variable {
-		getValue($1);
-		buffer("movq $_gp,%rbx\n");
-
-		char temp[80];
-		sprintf(temp, "addq $%d, %rbx\n", $1);
-		buffer(temp);
-
-    buffer("movl (%rbx), %eax");
-		$$ = getValue($1);
+		$$ = $1;
 	}
 	| Constant { 
 		$$ = $1;

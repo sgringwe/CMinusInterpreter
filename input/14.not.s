@@ -26,9 +26,15 @@ main:   nop
 	movq $_gp, %eax
 	addq $0, %eax
 	movl (%eax), %edx
-	movq $_gp,%rbx
-	addq $3, rbx
-	movl (%rbx), %eax	movl (null), %eax
+	movl %edx, %eax
+	movl %eax, %esi
+	movl $0, %edi
+	movl $.int_wformat, %r8d
+	call printf
+	movq $_gp, %eax
+	addq $4, %eax
+	movl (%eax), %edx
+	movl %eax, %eax
 	movl %eax, %esi
 	movl $0, %edi
 	movl $.int_wformat, %r8d
@@ -36,32 +42,18 @@ main:   nop
 	movq $_gp, %eax
 	addq $4, %eax
 	movl (%eax), %esi
-	movq $_gp,%rbx
-	addq $4, rbx
-	movl (%rbx), %eax	movl %eax, %eax
+	movl %esi, %eax
 	movl %eax, %edi
 	movl $0, %r8d
 	movl $.int_wformat, %r9d
 	call printf
 	movq $_gp, %eax
-	addq $4, %eax
-	movl (%eax), %edi
-	movq $_gp,%rbx
-	addq $5, rbx
-	movl (%rbx), %eax	movl (null), %eax
-	movl %eax, %r8d
-	movl $0, %r9d
-	movl $.int_wformat, %r10d
-	call printf
-	movq $_gp, %eax
 	addq $0, %eax
-	movl (%eax), %r8d
-	movq $_gp,%rbx
-	addq $6, rbx
-	movl (%rbx), %eax	movl %eax, %eax
-	movl %eax, %r9d
-	movl $0, %r10d
-	movl $.int_wformat, %r11d
+	movl (%eax), %esi
+	movl %eax, %eax
+	movl %eax, %edi
+	movl $0, %r8d
+	movl $.int_wformat, %r9d
 	call printf
 	leave
 	ret
