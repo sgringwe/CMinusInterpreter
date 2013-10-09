@@ -58,9 +58,9 @@ char statements[99999]; // TODO: FIX
 char printfs[9999]; // List of printf options
 
 // Register management
-int REGISTER_COUNT = 13;
-char *register_names[13] = { "%rax", "%rbx", "%rcx", "%rdx", "%rsi", "%rdi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
-int register_taken[13]; // 1 for true
+int REGISTER_COUNT = 12; // ebx removed
+char *register_names[12] = { "%eax", "%ecx", "%edx", "%esi", "%edi", "%r8d", "%r9d", "%r10d", "%r11d", "%r12d", "%r13d", "%r14d", "%r15d" };
+int register_taken[12]; // 1 for true
 
 %}
 
@@ -461,21 +461,18 @@ int allocateRegister() {
 // addq $4, %rbx
 // movl (%rbx), %eax
 int loadFromMemory(int offset) {
-	int reg1 = allocateRegister();
 	int reg2 = allocateRegister();
 
 	char temp[80];
 	sprintf(temp, "$%d", offset);
 
-	emit("movq", "$_gp", register_names[reg1]); // set %rbx reg to equal _gp
+	emit("movq", "$_gp", "%rbx"); // set %rbx reg to equal _gp
 
 	sprintf(temp, "$%d", offset);
-	emit("addq", temp, register_names[reg1]); // add offset to %rbx to move to correct memory location for variable
+	emit("addq", temp, "%rbx"); // add offset to %rbx to move to correct memory location for variable
 
-	sprintf(temp, "(%s)", register_names[reg1]);
+	sprintf(temp, "(%s)", "%rbx");
 	emit("movl", temp, register_names[reg2]); // store the memory location of rbx in eax
-
-	freeRegister(reg1);
 
 	return reg2; // reg2 now holds the location of the variable we want
 }
